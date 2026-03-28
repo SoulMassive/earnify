@@ -35,10 +35,17 @@ yarn-error.log*
 # IDE / Editors
 .vscode/
 .idea/
+.gemini/
 *.swp
 *.swo
 .DS_Store
 Thumbs.db
+
+# Database / Local Storage
+*.db
+*.sqlite
+*.backup
+dump.rdb
 
 # Testing
 coverage/

@@ -103,7 +103,7 @@ export function HeroSection() {
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-[family-name:var(--font-syne)] text-white leading-tight mb-6">
-              Turn Your Evening Hours Into{" "}
+              Turn Your Free Hours Into{" "}
               <span className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] bg-clip-text text-transparent">
                 Real Income
               </span>

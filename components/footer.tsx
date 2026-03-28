@@ -120,7 +120,7 @@ export function Footer() {
           <p className="text-sm text-[var(--text-muted)]">
             Made with{" "}
             <span className="text-[var(--error)]">&#9829;</span>
-            {" "}for Evening College Students
+            {" "}for College Students during their Free Hours
           </p>
 
           {/* Selectors */}

@@ -1,17 +1,18 @@
 "use client"
 
 import { useRef, useState } from "react"
+import Link from "next/link"
 import { ChevronLeft, ChevronRight, Megaphone, Laptop, CheckSquare, Smartphone, GraduationCap, Users, ShoppingBag, BarChart3 } from "lucide-react"
 
 const categories = [
-  { name: "Affiliate Marketing", icon: Megaphone, count: 124 },
-  { name: "Freelance Gigs", icon: Laptop, count: 89 },
-  { name: "Micro Tasks", icon: CheckSquare, count: 256 },
-  { name: "Social Media", icon: Smartphone, count: 67 },
-  { name: "Skill Courses", icon: GraduationCap, count: 43 },
-  { name: "Referral Programs", icon: Users, count: 78 },
-  { name: "Dropshipping", icon: ShoppingBag, count: 32 },
-  { name: "Data Entry", icon: BarChart3, count: 145 },
+  { name: "Affiliate Marketing", slug: "marketing", icon: Megaphone, count: 124 },
+  { name: "Freelance Gigs", slug: "writing", icon: Laptop, count: 89 },
+  { name: "Micro Tasks", slug: "data", icon: CheckSquare, count: 256 },
+  { name: "Social Media", slug: "social", icon: Smartphone, count: 67 },
+  { name: "Skill Courses", slug: "tutoring", icon: GraduationCap, count: 43 },
+  { name: "Referral Programs", slug: "marketing", icon: Users, count: 78 },
+  { name: "Dropshipping", slug: "data", icon: ShoppingBag, count: 32 },
+  { name: "Data Entry", slug: "data", icon: BarChart3, count: 145 },
 ]
 
 export function CategoryStrip() {
@@ -30,7 +31,10 @@ export function CategoryStrip() {
 
   return (
     <section className="sticky top-16 z-40 bg-white border-b border-[var(--border-color)]">
-      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <h2 className="text-center text-xl sm:text-2xl font-bold font-[family-name:var(--font-syne)] text-[var(--text-primary)] mb-1">
+          Choose your Pick
+        </h2>
         <div className="relative flex items-center py-3">
           {/* Left Arrow */}
           <button
@@ -49,18 +53,19 @@ export function CategoryStrip() {
               const Icon = category.icon
               const isActive = activeCategory === index
               return (
-                <button
+                <Link
                   key={category.name}
+                  href={`/categories/${category.slug}`}
                   onClick={() => setActiveCategory(index)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
                     isActive
-                      ? "bg-[var(--primary)] text-white shadow-md"
+                      ? "bg-[var(--primary)] text-white shadow-md font-bold"
                       : "bg-[var(--secondary)] text-[var(--text-secondary)] hover:bg-[var(--primary-light)] hover:border-[var(--primary)] border border-transparent"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="text-sm font-medium">{category.name}</span>
-                </button>
+                </Link>
               )
             })}
           </div>
