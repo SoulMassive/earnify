@@ -1,20 +1,60 @@
-"use client"
+'use client'
 
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { Megaphone, PenTool, Palette, Code, GraduationCap, BarChart3, Share2, Video } from "lucide-react"
-
-const categories = [
-  { name: "Affiliate Marketing", slug: "marketing", icon: Megaphone, count: 124, bgColor: "bg-[#6d9c9f]" },
-  { name: "Content Writing", slug: "writing", icon: PenTool, count: 89, bgColor: "bg-[#e8a838]" },
-  { name: "Graphic Design", slug: "design", icon: Palette, count: 67, bgColor: "bg-[#e91e8c]" },
-  { name: "Coding & Dev", slug: "development", icon: Code, count: 54, bgColor: "bg-[#7c3aed]" },
-  { name: "Online Tutoring", slug: "tutoring", icon: GraduationCap, count: 98, bgColor: "bg-[#4caf7d]" },
-  { name: "Data Entry", slug: "data", icon: BarChart3, count: 145, bgColor: "bg-[#8b5cf6]" },
-  { name: "Social Media", slug: "social", icon: Share2, count: 76, bgColor: "bg-[#e05252]" },
-  { name: "Video Editing", slug: "video", icon: Video, count: 43, bgColor: "bg-[#ef4444]" },
-]
+import { 
+  Megaphone, PenTool, Palette, Code, 
+  GraduationCap, BarChart3, Share2, Video,
+  Briefcase, Loader2
+} from "lucide-react"
 
 export function CategoriesGrid() {
+  const [categories, setCategories] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/page-content')
+        const data = await res.json()
+        if (data.categories) {
+          setCategories(data.categories)
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCategories()
+  }, [])
+
+  const getIcon = (slug: string) => {
+    switch(slug) {
+      case 'marketing': return Megaphone
+      case 'writing': return PenTool
+      case 'design': return Palette
+      case 'development': return Code
+      case 'coding': return Code
+      case 'tutoring': return GraduationCap
+      case 'data': return BarChart3
+      case 'social': return Share2
+      case 'video': return Video
+      default: return Briefcase
+    }
+  }
+
+  const getBgColor = (slug: string) => {
+    switch(slug) {
+      case 'marketing': return 'bg-[#6d9c9f]'
+      case 'writing': return 'bg-[#e8a838]'
+      case 'design': return 'bg-[#e91e8c]'
+      case 'development': 
+      case 'coding': return 'bg-[#7c3aed]'
+      default: return 'bg-gray-400'
+    }
+  }
+
   return (
     <section className="py-16 sm:py-20 bg-[#f7f9f0]" id="explore">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,23 +69,33 @@ export function CategoriesGrid() {
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {categories.map((category) => {
-            const Icon = category.icon
-            return (
-              <Link 
-                key={category.name} 
-                href={`/categories/${category.slug}`}
-                className="group bg-white rounded-2xl p-5 border border-[var(--border-color)] card-hover cursor-pointer"
-              >
-                <div className={`w-[52px] h-[52px] rounded-xl ${category.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <Icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="font-semibold text-[var(--text-primary)] mb-1">{category.name}</h3>
-                <p className="text-sm text-[var(--text-secondary)]">{category.count} opportunities</p>
-              </Link>
-            )
-          })}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 min-h-[200px]">
+          {loading ? (
+            Array(4).fill(0).map((_, i) => (
+              <div key={i} className="h-44 bg-white rounded-2xl animate-pulse border border-black/5" />
+            ))
+          ) : categories.length > 0 ? (
+            categories.map((category) => {
+              const Icon = getIcon(category.slug)
+              return (
+                <Link 
+                  key={category._id} 
+                  href={`/categories/${category.slug}`}
+                  className="group bg-white rounded-2xl p-6 border border-[var(--border-color)] card-hover cursor-pointer"
+                >
+                  <div className={`w-[52px] h-[52px] rounded-xl ${getBgColor(category.slug)} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-bold text-[var(--text-primary)] mb-1">{category.title}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] font-medium">{category.potential || 'Multiple tasks available'}</p>
+                </Link>
+              )
+            })
+          ) : (
+            <div className="col-span-full py-10 text-center text-[var(--text-secondary)]">
+               No categories found. Please seed the database.
+            </div>
+          )}
         </div>
       </div>
     </section>

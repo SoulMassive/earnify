@@ -31,10 +31,21 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  rank: {
-    type: String,
-    default: 'Bronze',
+  totalEarned: {
+    type: Number,
+    default: 0,
   },
+  globalRank: {
+    type: Number,
+    default: 0,
+  },
+  college: String,
+  year: String,
+  course: String,
+  city: String,
+  skills: [String],
+  interests: [String],
+  earningGoal: String,
 }, { timestamps: true });
 
 // Check if the model is already exists in development (prevent overwrite)

@@ -1,9 +1,8 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
-import { notFound } from "next/navigation"
-import { categoryHubs } from "@/lib/data/categories"
+import { notFound, useRouter } from "next/navigation"
 import { CategoryHero } from "@/components/category-hub/CategoryHero"
 import { CategoryFilters } from "@/components/category-hub/CategoryFilters"
 import { CategoryGigList } from "@/components/category-hub/CategoryGigList"
@@ -12,12 +11,50 @@ import { CategoryDashboard } from "@/components/category-hub/CategoryDashboard"
 import { CategoryCustomTools } from "@/components/category-hub/CategoryCustomTools"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { LayoutGrid, GraduationCap, Briefcase, BarChart3 } from "lucide-react"
+import { LayoutGrid, GraduationCap, Briefcase, BarChart3, Loader2 } from "lucide-react"
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = React.use(params)
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<'gigs' | 'learn' | 'work' | 'analytics'>('gigs')
-  const category = categoryHubs[slug as keyof typeof categoryHubs]
+  const [category, setCategory] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res = await fetch('/api/page-content')
+        const data = await res.json()
+        if (data.categories) {
+          const cat = data.categories.find((c: any) => c.slug === slug)
+          if (!cat) {
+             setLoading(false)
+             return
+          }
+          
+          // Also fetch gigs for this category
+          const gigsRes = await fetch(`/api/opportunities?category=${slug}`)
+          const gigs = await gigsRes.json()
+          
+          setCategory({ ...cat, gigs: gigs || [] })
+        }
+      } catch (err) {
+        console.error('Failed to fetch category page data:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCategory()
+  }, [slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--dark-bg)] text-white flex flex-col items-center justify-center gap-4">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-sm text-white/50 font-bold uppercase tracking-widest">Constructing Hub...</p>
+      </div>
+    )
+  }
 
   if (!category) {
     notFound()
@@ -34,14 +71,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     <main className="min-h-screen bg-[var(--dark-bg)] text-white">
       <Navbar />
       
-      <CategoryHero 
-        title={category.title} 
-        potential={category.potential} 
-        description={category.description}
-        avgIncome={category.avgIncome}
-        demandLevel={category.demandLevel}
-        successRate={category.successRate}
-      />
+      <CategoryHero slug={slug} />
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 mb-12 relative z-10">
         <Link 
@@ -153,19 +183,19 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                <div className="absolute top-0 right-0 p-4 opacity-10">
                   <BarChart3 className="w-12 h-12" />
                </div>
-               <h3 className="font-bold text-lg mb-4">Quick Insights</h3>
+               <h3 className="font-bold text-lg mb-4 text-white">Quick Insights</h3>
                <ul className="space-y-4">
                   <li className="flex justify-between items-center text-sm">
                      <span className="text-[var(--text-muted)]">Active Students</span>
-                     <span className="font-bold text-white">1,240+</span>
+                     <span className="font-bold text-white">{(category.gigs.length * 12).toLocaleString()}+</span>
                   </li>
                   <li className="flex justify-between items-center text-sm">
-                     <span className="text-[var(--text-muted)]">Gigs Managed</span>
-                     <span className="font-bold text-white">45 Today</span>
+                     <span className="text-[var(--text-muted)]">Gigs Available</span>
+                     <span className="font-bold text-white">{category.gigs.length} Total</span>
                   </li>
                   <li className="flex justify-between items-center text-sm">
                      <span className="text-[var(--text-muted)]">Average Payout</span>
-                     <span className="font-bold text-[var(--success)]">₹4,200</span>
+                     <span className="font-bold text-[var(--primary)]">{category.avgIncome || '₹4,200'}</span>
                   </li>
                </ul>
             </div>

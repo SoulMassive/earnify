@@ -3,6 +3,7 @@
 import { UserPlus, Search, Wallet, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 const iconMap: Record<string, any> = {
   UserPlus,
@@ -22,6 +23,7 @@ interface Step {
 export function HowItWorks() {
   const [steps, setSteps] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,7 +100,10 @@ export function HowItWorks() {
 
         {/* CTA */}
         <div className="text-center mt-12">
-          <Button className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base">
+          <Button 
+            onClick={() => router.push('/signup')}
+            className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base"
+          >
             Get Started for Free
           </Button>
         </div>

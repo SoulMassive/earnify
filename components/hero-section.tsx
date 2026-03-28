@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Play, Search, TrendingUp, Users, Briefcase, Star } from "lucide-react"
+import { Play, Search, TrendingUp, Users, Briefcase, Star, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 const stats = [
   { label: "Students Earning", value: 12400, prefix: "", suffix: "+" },
@@ -47,30 +48,44 @@ function AnimatedCounter({ value, prefix, suffix }: { value: number; prefix: str
 }
 
 export function HeroSection() {
-  const [statsData, setStatsData] = useState(stats);
+  const [siteSettings, setSiteSettings] = useState<any>(null);
+  const [statsData, setStatsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter()
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchPageContent = async () => {
       try {
-        const res = await fetch('/api/leaderboard');
+        const res = await fetch('/api/page-content');
         const data = await res.json();
-        if (Array.isArray(data)) {
+        if (data.siteSettings) {
+          setSiteSettings(data.siteSettings);
           setStatsData([
-            { label: "Students Earning", value: data.length + 12000, prefix: "", suffix: "+" },
-            { label: "Paid Out", value: 3.4, prefix: "Rs.", suffix: "Cr+" },
-            { label: "Opportunities Listed", value: 870, prefix: "", suffix: "+" },
+            { label: "Students Earning", value: data.siteSettings.totalStudentsEarning, prefix: "", suffix: "+" },
+            { label: "Paid Out", value: data.siteSettings.totalPaidOut, prefix: "Rs.", suffix: "Cr+" },
+            { label: "Opportunities Listed", value: data.siteSettings.totalOpportunities, prefix: "", suffix: "+" },
           ]);
         }
       } catch (error) {
-        console.error('Failed to fetch hero stats:', error);
+        console.error('Failed to fetch site settings:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStats();
+    fetchPageContent();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-20 flex flex-col items-center justify-center gap-4 bg-[var(--dark-bg)]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-sm text-white/30 uppercase font-bold tracking-widest">Waking up Earnify...</p>
+      </div>
+    )
+  }
+
+  const { heroHeadline, heroSubheadline, popularSearches = [] } = siteSettings || {}
 
   return (
     <section className="relative min-h-screen pt-20 overflow-hidden">
@@ -103,15 +118,12 @@ export function HeroSection() {
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-[family-name:var(--font-syne)] text-white leading-tight mb-6">
-              Turn Your Free Hours Into{" "}
-              <span className="bg-gradient-to-r from-[var(--primary)] to-[var(--primary-light)] bg-clip-text text-transparent">
-                Real Income
-              </span>
+              {heroHeadline || "Turn Your Free Hours Into Real Income"}
             </h1>
 
             {/* Subheadline */}
             <p className="text-lg text-[var(--text-muted)] mb-8 max-w-xl mx-auto lg:mx-0">
-              Earnify connects college students with affiliate deals, freelance gigs, and micro-tasks — built around your schedule.
+              {heroSubheadline || "Earnify connects college students with affiliate deals, freelance gigs, and micro-tasks."}
             </p>
 
             {/* Search Bar */}
@@ -146,9 +158,10 @@ export function HeroSection() {
             {/* Popular Searches */}
             <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-start mb-8">
               <span className="text-sm text-[var(--text-muted)]">Trending:</span>
-              {popularSearches.map((search) => (
+              {popularSearches.map((search: string) => (
                 <button
                   key={search}
+                  onClick={() => router.push('/signup')}
                   className="px-3 py-1.5 text-sm text-[var(--primary-light)] bg-[var(--primary)]/20 rounded-full hover:bg-[var(--primary)]/30 transition-colors"
                 >
                   {search}
@@ -158,11 +171,15 @@ export function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base">
+              <Button onClick={() => router.push('/signup')} className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base">
                 Explore Opportunities
               </Button>
               <Button 
                 variant="outline" 
+                onClick={() => {
+                  const target = document.getElementById('how-it-works');
+                  target?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="rounded-full px-8 h-12 text-base border-[var(--primary)] text-[var(--primary-light)] hover:bg-[var(--primary)]/10 bg-transparent"
               >
                 <Play className="w-4 h-4 mr-2" />

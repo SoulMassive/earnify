@@ -29,7 +29,17 @@ export async function POST(req: Request) {
 
     const response = NextResponse.json({ 
       success: true, 
-      user: { name: newUser.name, email: newUser.email, _id: newUser._id } 
+      user: { 
+        name: newUser.name, 
+        email: newUser.email, 
+        _id: newUser._id,
+        avatar: newUser.avatar,
+        balance: newUser.balance,
+        points: newUser.points,
+        totalEarned: newUser.totalEarned,
+        globalRank: newUser.globalRank,
+        completedTasks: newUser.completedTasks
+      } 
     }, { status: 201 });
 
     response.cookies.set('token', token, {

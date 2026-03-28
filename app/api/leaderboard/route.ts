@@ -8,7 +8,7 @@ export async function GET() {
     const topUsers = await User.find({})
       .sort({ points: -1 })
       .limit(10)
-      .select('name avatar points balance completedTasks rank');
+      .select('name avatar points balance completedTasks totalEarned globalRank');
 
     return NextResponse.json(topUsers);
   } catch (error: any) {

@@ -28,6 +28,7 @@ export const metadata: Metadata = {
 }
 
 import { Toaster } from 'sonner'
+import { AuthProvider } from '@/components/auth/AuthContext'
 
 export default function RootLayout({
   children,
@@ -37,9 +38,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        {children}
-        <Toaster position="top-center" richColors />
-        <Analytics />
+        <AuthProvider>
+          {children}
+          <Toaster position="top-center" richColors />
+          <Analytics />
+        </AuthProvider>
       </body>
     </html>
   )

@@ -25,6 +25,16 @@ const LiveSessionSchema = new mongoose.Schema({
   spotsRemaining: Number,
 });
 
+const SiteSettingsSchema = new mongoose.Schema({
+  heroHeadline: String,
+  heroSubheadline: String,
+  totalStudentsEarning: Number,
+  totalPaidOut: Number,
+  totalOpportunities: Number,
+  popularSearches: [String],
+});
+
 export const Testimonial = mongoose.models.Testimonial || mongoose.model('Testimonial', TestimonialSchema);
 export const Benefit = mongoose.models.Benefit || mongoose.model('Benefit', BenefitSchema);
 export const LiveSession = mongoose.models.LiveSession || mongoose.model('LiveSession', LiveSessionSchema);
+export const SiteSettings = mongoose.models.SiteSettings || mongoose.model('SiteSettings', SiteSettingsSchema);

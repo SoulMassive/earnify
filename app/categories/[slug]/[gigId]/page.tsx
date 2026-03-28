@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import { categoryHubs } from "@/lib/data/categories"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -8,10 +7,22 @@ import Link from "next/link"
 
 export default async function GigDetailPage({ params }: { params: Promise<{ slug: string, gigId: string }> }) {
   const { slug, gigId } = await params
-  const category = categoryHubs[slug as keyof typeof categoryHubs]
-  const gig = category?.gigs.find(g => g.id === gigId)
+  
+  // Fetch from our internal APIs
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  
+  const [contentRes, gigsRes] = await Promise.all([
+    fetch(`${baseUrl}/api/page-content`),
+    fetch(`${baseUrl}/api/opportunities?category=${slug}`)
+  ])
+  
+  const contentData = await contentRes.json()
+  const gigsData = await gigsRes.json()
+  
+  const category = contentData.categories?.find((c: any) => c.slug === slug)
+  const gig = gigsData?.find((g: any) => g._id === gigId || g.id === gigId)
 
-  if (!gig) {
+  if (!gig || !category) {
     notFound()
   }
 
