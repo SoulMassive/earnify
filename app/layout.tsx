@@ -1,31 +1,10 @@
-import type { Metadata } from 'next'
-import { DM_Sans, Syne, JetBrains_Mono } from 'next/font/google'
-import { Providers } from "@/components/providers";
-import './globals.css'
-
-const dmSans = DM_Sans({ 
-  subsets: ["latin"],
-  variable: '--font-dm-sans',
-  display: 'swap',
-})
-
-const syne = Syne({ 
-  subsets: ["latin"],
-  variable: '--font-syne',
-  display: 'swap',
-})
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: '--font-jetbrains',
-  display: 'swap',
-})
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Earnify - Turn Your Free Hours Into Real Income',
-  description: 'Earnify connects college students with affiliate deals, freelance gigs, and micro-tasks — built around your schedule. Join 12,000+ students earning while studying.',
-  keywords: 'student earning, freelance, affiliate marketing, micro tasks, side income, college students',
-}
+  title: "Earnify",
+  description: "Earn while you study",
+};
 
 export default function RootLayout({
   children,
@@ -33,9 +12,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        <Providers>{children}</Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        {children}
       </body>
     </html>
   );
