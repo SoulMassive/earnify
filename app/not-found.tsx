@@ -1,30 +1,48 @@
-"use client"
-import Link from "next/link"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
+import React from "react";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen bg-white flex flex-col">
-      <Navbar />
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 py-32">
-        <p className="text-8xl font-black font-[family-name:var(--font-syne)] text-[var(--primary)] opacity-20 leading-none mb-4">404</p>
-        <h1 className="text-3xl sm:text-4xl font-extrabold font-[family-name:var(--font-syne)] text-[var(--text-primary)] mb-3">
-          Page Not Found
-        </h1>
-        <p className="text-[var(--text-secondary)] text-lg max-w-md mb-8">
-          The page you're looking for doesn't exist or may have moved.
-        </p>
-        <div className="flex items-center gap-4 flex-wrap justify-center">
-          <Link href="/" className="bg-[var(--primary)] text-white font-semibold px-6 py-3 rounded-full hover:bg-[var(--primary-dark)] transition-colors">
-            Go Home
-          </Link>
-          <Link href="/help-center" className="border border-[var(--border-color)] text-[var(--text-secondary)] font-semibold px-6 py-3 rounded-full hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors">
-            Help Center
-          </Link>
+    <html lang="en">
+      <body
+        style={{
+          margin: 0,
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: "16px",
+          fontFamily: "system-ui, sans-serif",
+          background: "#f1f5e2",
+          color: "#1c2b2c",
+        }}
+      >
+        <div style={{ fontSize: "72px", fontWeight: 800, color: "#6d9c9f" }}>
+          404
         </div>
-      </div>
-      <Footer />
-    </main>
-  )
+        <h2 style={{ fontSize: "22px", fontWeight: 700, margin: 0 }}>
+          Page Not Found
+        </h2>
+        <p style={{ color: "#5a7a7b", fontSize: "15px", margin: 0 }}>
+          The page you are looking for doesn&apos;t exist.
+        </p>
+        <a
+          href="/"
+          style={{
+            background: "linear-gradient(135deg, #6d9c9f, #4a8b8e)",
+            color: "#fff",
+            border: "none",
+            borderRadius: "100px",
+            padding: "12px 28px",
+            fontSize: "15px",
+            fontWeight: 600,
+            cursor: "pointer",
+            textDecoration: "none",
+          }}
+        >
+          Go Home
+        </a>
+      </body>
+    </html>
+  );
 }
