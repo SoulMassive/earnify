@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { Navbar } from "@/components/navbar"
 import { HeroSection } from "@/components/hero-section"
 import { CategoryStrip } from "@/components/category-strip"

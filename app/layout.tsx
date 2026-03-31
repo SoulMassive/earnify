@@ -24,7 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Earnify - Turn Your Free Hours Into Real Income',
   description: 'Earnify connects college students with affiliate deals, freelance gigs, and micro-tasks — built around your schedule. Join 12,000+ students earning while studying.',
-  keywords: ['student earning', 'freelance', 'affiliate marketing', 'micro tasks', 'side income', 'college students'],
+  keywords: 'student earning, freelance, affiliate marketing, micro tasks, side income, college students',
 }
 
 import { Toaster } from 'sonner'

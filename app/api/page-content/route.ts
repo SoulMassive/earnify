@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import connectDB from '@/lib/db';
 import { Testimonial, Benefit, SiteSettings } from '@/lib/models/PageContent';
 import { Category } from '@/lib/models/Category';

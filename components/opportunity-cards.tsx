@@ -425,7 +425,7 @@ export function OpportunityCards() {
                              { title: "Task Execution", desc: "Complete the task as per guidelines provided." },
                              { title: "Instant Payout", desc: "Money credited to Earnify wallet on approval." }
                            ].map((step, i) => (
-                             <div key={i} className="flex gap-8 relative z-10">
+                             <div key={step.title} className="flex gap-8 relative z-10">
                                 <div className="w-8 h-8 rounded-full bg-[var(--primary)] flex items-center justify-center text-xs font-black shadow-lg shadow-[var(--primary)]/20">
                                    {i + 1}
                                 </div>
