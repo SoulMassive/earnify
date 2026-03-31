@@ -11,42 +11,7 @@ export function CategoryCustomTools({ categorySlug }: CategoryCustomToolsProps) 
   const renderTool = () => {
     switch(categorySlug) {
       case 'marketing':
-        return (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-2xl overflow-hidden relative group">
-             {/* Glow Effect */}
-            <div className="absolute top-0 left-0 w-32 h-32 bg-[var(--primary)]/10 rounded-full blur-3xl" />
-             <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-dark)] flex items-center justify-center">
-                   <BarChart3 className="w-5 h-5 text-white" />
-                </div>
-                <h2 className="text-xl font-bold text-white font-[family-name:var(--font-syne)] tracking-tight">Analytics & Pixel</h2>
-             </div>
-             
-             <div className="space-y-4">
-                <div className="p-4 bg-white/5 border border-white/10 rounded-xl relative overflow-hidden group/item">
-                   <div className="absolute top-0 right-0 p-4">
-                      <TrendingUp className="w-4 h-4 text-[var(--success)] opacity-40" />
-                   </div>
-                   <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest mb-1">Total Hits</p>
-                   <p className="text-2xl font-bold font-[family-name:var(--font-jetbrains)] text-white">0</p>
-                   <div className="mt-4 flex gap-4">
-                      <div>
-                         <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest">Conversions</p>
-                         <p className="text-lg font-bold text-white">0</p>
-                      </div>
-                      <div>
-                         <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-widest">CR %</p>
-                         <p className="text-lg font-bold text-white">0.00%</p>
-                      </div>
-                   </div>
-                </div>
-
-                <Button className="w-full btn-cta-gradient h-10 rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 animate-fade-in">
-                   Connect Facebook Pixel
-                </Button>
-             </div>
-          </div>
-        )
+        return null;
 
       case 'design':
         return (

@@ -7,7 +7,7 @@ import { HowItWorks } from "@/components/how-it-works"
 import { Testimonials } from "@/components/testimonials"
 import { Leaderboard } from "@/components/leaderboard"
 import { DashboardPreview } from "@/components/dashboard-preview"
-import { LiveSessions } from "@/components/live-sessions"
+
 import { Footer } from "@/components/footer"
 
 export default function HomePage() {
@@ -20,7 +20,7 @@ export default function HomePage() {
       <OpportunityCards />
       <HowItWorks />
       <DashboardPreview />
-      <LiveSessions />
+
       <Testimonials />
       <Leaderboard />
       <Footer />

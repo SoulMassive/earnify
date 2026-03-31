@@ -6,23 +6,46 @@ const SubmissionSchema = new mongoose.Schema({
     ref: 'User',
     required: [true, 'Please provide a userId.'],
   },
-  gigId: {
+  opportunityId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Gig',
-    required: [true, 'Please provide a gigId.'],
+    ref: 'Opportunity',
+    required: [true, 'Please provide an opportunityId.'],
+  },
+  // Work proof fields
+  workLink: {
+    type: String,
+    default: '',
   },
   fileUrl: {
     type: String,
-    required: [true, 'Please provide a fileUrl or submission link.'],
+    default: '',
   },
+  fileName: {
+    type: String,
+    default: '',
+  },
+  fileSize: {
+    type: Number,
+    default: 0,
+  },
+  message: {
+    type: String,
+    default: '',
+  },
+  // Legacy fields (keep for compatibility)
+  proofText: { type: String, default: '' },
+  proofUrl:  { type: String, default: '' },
+  links: [String],
+  // Status pipeline
   status: {
     type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
+    enum: ['applied', 'submitted', 'approved', 'rejected'],
+    default: 'applied',
   },
-  feedback: {
-    type: String,
-  }
+  feedback: { type: String, default: '' },
+  reward: Number,
+  reviewedAt: Date,
 }, { timestamps: true });
 
 export const Submission = mongoose.models.Submission || mongoose.model('Submission', SubmissionSchema);
+

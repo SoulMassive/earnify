@@ -6,27 +6,47 @@ import {
   User, Mail, School, Shield, 
   Settings, Save, Key, LogOut,
   Image as ImageIcon, Upload,
-  Bell, Check
+  Bell, Check, Loader2
 } from 'lucide-react'
 import { useAuth } from '@/components/auth/AuthContext'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth()
+  const { user, login, logout } = useAuth()
   const [saving, setSaving] = useState(false)
+  const [name, setName] = useState(user?.name || '')
+  const [college, setCollege] = useState(user?.college || '')
   
   if (!user) return null
 
-  const handleUpdate = (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    setTimeout(() => {
-      setSaving(false)
-      toast.success("Profile Updated Successfully", {
-         description: "Your information has been synced across the platform."
+    
+    try {
+      const res = await fetch('/api/auth/update-profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, college })
       })
-    }, 1500)
+      
+      const data = await res.json()
+      
+      if (res.ok) {
+        // Update local session via login function in context
+        login({ ...user, name, college })
+        toast.success("Profile Updated Successfully", {
+           description: "Your information has been synced across the platform."
+        })
+      } else {
+        toast.error(data.error || "Update failed")
+      }
+    } catch (err) {
+      toast.error("Network error. Please try again.")
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -87,7 +107,8 @@ export default function SettingsPage() {
                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
                          <input 
                            type="text" 
-                           defaultValue={user.name} 
+                           value={name} 
+                           onChange={(e) => setName(e.target.value)}
                            className="w-full h-14 bg-white/5 border border-white/5 rounded-2xl pl-12 pr-6 text-white font-medium outline-none focus:border-primary/30 transition-all" 
                          />
                       </div>
@@ -110,7 +131,8 @@ export default function SettingsPage() {
                          <School className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
                          <input 
                            type="text" 
-                           defaultValue={user.college} 
+                           value={college} 
+                           onChange={(e) => setCollege(e.target.value)}
                            placeholder="Enter your college name..."
                            className="w-full h-14 bg-white/5 border border-white/5 rounded-2xl pl-12 pr-6 text-white font-medium outline-none focus:border-primary/30 transition-all" 
                          />

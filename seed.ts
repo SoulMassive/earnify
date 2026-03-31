@@ -58,16 +58,15 @@ const seedData = async () => {
     ]);
 
     console.log('Seeding page content...');
-    const { Testimonial, Benefit, LiveSession } = await import('./lib/models/PageContent');
+    const { Testimonial, Benefit } = await import('./lib/models/PageContent');
     
     await Testimonial.deleteMany({});
     await Benefit.deleteMany({});
-    await LiveSession.deleteMany({});
 
     await Testimonial.create([
       { name: "Kavya Desai", role: "IIT Delhi", college: "IIT Delhi", avatar: "9", content: "Earnify helped me fund my own project within just 2 months. The affiliate tasks are super easy to pick up!", rating: 5 },
       { name: "Arjun Menon", role: "NIT Trichy", college: "NIT Trichy", avatar: "14", content: "Best platform for students. I made Rs. 15,000 last month doing micro-tasks. Highly recommend it to everyone.", rating: 5 },
-      { name: "Sneha Iyer", role: "BITS Pilani", college: "BITS Pilani", avatar: "21", content: "The live sessions are a game changer. I learned so much about digital marketing and now I have a steady side income.", rating: 5 },
+      { name: "Sneha Iyer", role: "BITS Pilani", college: "BITS Pilani", avatar: "21", content: "I started with zero skills and now earn weekly. Earnify is genuinely the best platform for students.", rating: 5 },
     ]);
 
     await Benefit.create([
@@ -76,11 +75,7 @@ const seedData = async () => {
       { title: "Track & Withdraw", description: "Monitor your earnings in real-time and withdraw anytime to your bank or UPI.", icon: "Wallet", order: 3 },
     ]);
 
-    await LiveSession.create([
-      { title: "Affiliate Marketing 101", instructor: "Rajiv Sethi", date: new Date(), category: "Marketing", spotsRemaining: 15, imageUrl: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=80" },
-      { title: "Canva Design Mastery", instructor: "Sarah Chen", date: new Date(), category: "Design", spotsRemaining: 8, imageUrl: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600&q=80" },
-      { title: "Python for Data Entry", instructor: "Amit Kumar", date: new Date(), category: "Development", spotsRemaining: 10, imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" },
-    ]);
+
 
     console.log('Seeding complete!');
     process.exit(0);

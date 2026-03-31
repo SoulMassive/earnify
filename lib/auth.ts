@@ -26,3 +26,9 @@ export async function getUserFromToken() {
   const decoded = verifyToken(token);
   return decoded;
 }
+
+export async function isAdmin() {
+  const user = await getUserFromToken();
+  const role = (user as any)?.role;
+  return role === 'admin' || role === 'superadmin' || role === 'moderator' || role === 'reviewer';
+}

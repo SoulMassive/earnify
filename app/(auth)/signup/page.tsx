@@ -11,21 +11,44 @@ import { useAuth } from '@/components/auth/AuthContext'
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const router = useRouter()
   const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (password !== confirmPassword) {
+       return toast.error("Passwords do not match")
+    }
+
     setIsLoading(true)
     
-    // Simulate auth logic
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      })
+      
+      const data = await res.json()
+      
+      if (res.ok) {
+        login(data.user)
+        toast.success('Account created! Welcome to Earnify.')
+        router.push('/dashboard')
+      } else {
+        toast.error(data.error || 'Registration failed')
+      }
+    } catch (err) {
+      toast.error('Something went wrong. Please try again.')
+    } finally {
       setIsLoading(false)
-      login({ email: 'newstudent@earnify.com', name: 'New Earner' })
-      toast.success('Account created! Let\'s set up your profile.')
-      router.push('/onboarding')
-    }, 1500)
+    }
   }
 
   const containerVariants = {
@@ -80,7 +103,8 @@ export default function SignupPage() {
             <input
               type="text"
               required
-              placeholder="Shikhar Sharma"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full rounded-xl border border-white/5 bg-white/5 py-3.5 pr-4 pl-12 text-sm text-white outline-none transition-all placeholder:text-white/10 hover:bg-white/[0.07] focus:border-primary/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-primary/10"
             />
           </div>
@@ -94,7 +118,8 @@ export default function SignupPage() {
             <input
               type="email"
               required
-              placeholder="shikhar@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-white/5 bg-white/5 py-3.5 pr-4 pl-12 text-sm text-white outline-none transition-all placeholder:text-white/10 hover:bg-white/[0.07] focus:border-primary/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-primary/10"
             />
           </div>
@@ -108,7 +133,8 @@ export default function SignupPage() {
             <input
               type={showPassword ? 'text' : 'password'}
               required
-              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-white/5 bg-white/5 py-3.5 pr-12 pl-12 text-sm text-white outline-none transition-all placeholder:text-white/10 hover:bg-white/[0.07] focus:border-primary/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-primary/10"
             />
             <button
@@ -129,7 +155,8 @@ export default function SignupPage() {
             <input
               type={showPassword ? 'text' : 'password'}
               required
-              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full rounded-xl border border-white/5 bg-white/5 py-3.5 pr-4 pl-12 text-sm text-white outline-none transition-all placeholder:text-white/10 hover:bg-white/[0.07] focus:border-primary/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-primary/10"
             />
           </div>

@@ -1,15 +1,16 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Clock, CheckCircle2, AlertCircle, 
   ChevronRight, Calendar, Briefcase, 
   BookText, Palette, Code, Loader2,
-  FileText, Send, MoreVertical, XCircle
+  FileText, Send, MoreVertical, XCircle, Zap
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export default function OngoingTasks() {
   const router = useRouter()
@@ -18,33 +19,75 @@ export default function OngoingTasks() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // For now, we seed some mock tasks because we haven't implemented application logic yet
     const fetchTasks = async () => {
-      // simulate API delay
-      await new Promise(r => setTimeout(r, 1000))
-      
-      const mockTasks = [
-        { _id: 't-1', title: 'Write 10 Instagram Captions', category: 'Writing', payout: 1200, deadline: 'Tomorrow', status: 'Active', client: 'SocialPulse' },
-        { _id: 't-2', title: 'Promote AmazePay App', category: 'Marketing', payout: 50, deadline: 'Ongoing', status: 'Active', client: 'AmazePay' },
-        { _id: 't-3', title: 'Design Logo for StartupX', category: 'Design', payout: 4500, deadline: '3 days ago', status: 'Submitted', client: 'StartupX' },
-        { _id: 't-4', title: 'React Dashboard Bug Fix', category: 'Coding', payout: 8500, deadline: 'Completed', status: 'Completed', client: 'OpenSourceX' },
-      ]
-      setTasks(mockTasks)
-      setLoading(false)
+      try {
+        const res = await fetch('/api/submissions')
+        const data = await res.json()
+        if (Array.isArray(data)) {
+          setTasks(data)
+        }
+      } catch (err) {
+        console.error('Failed to fetch tasks:', err)
+      } finally {
+        setLoading(false)
+      }
     }
     fetchTasks()
   }, [])
 
-  const filteredTasks = tasks.filter(t => t.status === activeTab)
+   const [submittingTask, setSubmittingTask] = useState<any>(null)
+   const [proofText, setProofText] = useState('')
+   const [proofUrl, setProofUrl] = useState('')
+   const [isSubmitting, setIsSubmitting] = useState(false)
+
+   const handleSubmitWork = async () => {
+      if (!proofText) return toast.error("Please provide work proof text")
+      setIsSubmitting(true)
+      try {
+         const res = await fetch(`/api/submissions/${submittingTask._id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+               status: 'submitted',
+               proofText,
+               proofUrl
+            })
+         })
+         if (res.ok) {
+            toast.success("Work submitted for review!")
+            setSubmittingTask(null)
+            setProofText('')
+            setProofUrl('')
+            // refresh
+            const refreshRes = await fetch('/api/submissions')
+            const data = await refreshRes.json()
+            setTasks(data || [])
+         }
+      } catch (err) {
+         toast.error("Failed to submit work")
+      } finally {
+         setIsSubmitting(false)
+      }
+   }
+
+  const getStatusForTab = (status: string) => {
+    if (status === 'applied' || status === 'approved_to_start') return 'Active'
+    if (status === 'submitted') return 'Submitted'
+    if (status === 'completed') return 'Completed'
+    if (status === 'rejected') return 'Rejected'
+    return 'Active'
+  }
+
+  const filteredTasks = tasks.filter(t => getStatusForTab(t.status) === activeTab)
 
   const tabs = [
-     { id: 'Active', icon: Clock, count: tasks.filter(t => t.status === 'Active').length },
-     { id: 'Submitted', icon: Send, count: tasks.filter(t => t.status === 'Submitted').length },
-     { id: 'Completed', icon: CheckCircle2, count: tasks.filter(t => t.status === 'Completed').length },
-     { id: 'Rejected', icon: XCircle, count: tasks.filter(t => t.status === 'Rejected').length },
+     { id: 'Active', icon: Clock, count: tasks.filter(t => getStatusForTab(t.status) === 'Active').length },
+     { id: 'Submitted', icon: Send, count: tasks.filter(t => getStatusForTab(t.status) === 'Submitted').length },
+     { id: 'Completed', icon: CheckCircle2, count: tasks.filter(t => getStatusForTab(t.status) === 'Completed').length },
+     { id: 'Rejected', icon: XCircle, count: tasks.filter(t => getStatusForTab(t.status) === 'Rejected').length },
   ]
 
-  return (
+   return (
     <div className="space-y-10 animate-fade-in">
        {/* Header */}
        <div>
@@ -94,36 +137,44 @@ export default function OngoingTasks() {
                 >
                    <div className="flex items-center gap-5 w-full">
                       <div className="h-14 w-14 rounded-2xl bg-[#0a0f10] border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                         {task.category === 'Writing' && <BookText className="w-6 h-6 text-blue-400" />}
-                         {task.category === 'Design' && <Palette className="w-6 h-6 text-pink-400" />}
-                         {(task.category === 'Development' || task.category === 'Coding') && <Code className="w-6 h-6 text-purple-400" />}
-                         {!['Writing', 'Design', 'Coding', 'Development'].includes(task.category) && <Briefcase className="w-6 h-6 text-primary" />}
+                         {((task.opportunityId as any)?.category === 'Writing' || task.category === 'Writing') && <BookText className="w-6 h-6 text-blue-400" />}
+                         {((task.opportunityId as any)?.category === 'Design' || task.category === 'Design') && <Palette className="w-6 h-6 text-pink-400" />}
+                         {((task.opportunityId as any)?.category === 'Development' || (task.opportunityId as any)?.category === 'Coding') && <Code className="w-6 h-6 text-purple-400" />}
+                         {!['Writing', 'Design', 'Coding', 'Development'].includes((task.opportunityId as any)?.category || task.category) && <Briefcase className="w-6 h-6 text-primary" />}
                       </div>
                       <div className="min-w-0">
                          <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-bold text-white group-hover:text-primary transition-colors text-lg truncate leading-tight">{task.title}</h3>
-                            <span className="px-2 py-0.5 rounded text-[10px] bg-white/5 text-white/30 border border-white/5 whitespace-nowrap">{task.client}</span>
+                            <h3 className="font-bold text-white group-hover:text-primary transition-colors text-lg truncate leading-tight">{(task.opportunityId as any)?.title || task.title}</h3>
+                            <span className="px-2 py-0.5 rounded text-[10px] bg-white/5 text-white/30 border border-white/5 whitespace-nowrap">{(task.opportunityId as any)?.category || 'General Task'}</span>
                          </div>
                          <div className="flex flex-wrap items-center gap-4 text-xs">
-                            <span className="flex items-center gap-1.5 text-white/40"><Calendar className="w-3.5 h-3.5" /> Due: {task.deadline}</span>
-                            <span className="flex items-center gap-1.5 text-white/40 font-bold"><Zap className="w-3.5 h-3.5 text-primary" /> Est. Payout: ₹{task.payout}</span>
+                            <span className="flex items-center gap-1.5 text-white/40"><Calendar className="w-3.5 h-3.5" /> Start Date: {new Date(task.createdAt).toLocaleDateString()}</span>
+                            <span className="flex items-center gap-1.5 text-white/40 font-bold"><Zap className="w-3.5 h-3.5 text-primary" /> Reward: ₹{task.reward || (task.opportunityId as any)?.reward}</span>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                               activeTab === 'Active' ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20' : 
-                               activeTab === 'Submitted' ? 'bg-blue-400/10 text-blue-400 border border-blue-400/20' :
+                               task.status === 'applied' ? 'bg-orange-400/10 text-orange-400 border border-orange-400/20' : 
+                               task.status === 'approved_to_start' ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20' : 
+                               task.status === 'submitted' ? 'bg-blue-400/10 text-blue-400 border border-blue-400/20' :
                                'bg-emerald-400/10 text-emerald-400 border border-emerald-400/20'
-                            }`}>{activeTab}</span>
+                            }`}>{task.status.replace(/_/g, ' ').toUpperCase()}</span>
                          </div>
                       </div>
                    </div>
 
                    <div className="flex items-center gap-3 justify-end w-full md:w-auto">
                       {activeTab === 'Active' && (
-                         <Button className="h-11 px-6 rounded-2xl bg-primary text-[#0a0f10] font-black group transition-all">
-                            Submit Task
-                            <Send className="w-4 h-4 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                         </Button>
+                         task.status === 'approved_to_start' ? (
+                           <Button 
+                             onClick={() => setSubmittingTask(task)}
+                             className="h-11 px-6 rounded-2xl bg-primary text-[#0a0f10] font-black group transition-all shrink-0"
+                           >
+                              Submit Task
+                              <Send className="w-4 h-4 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                           </Button>
+                         ) : (
+                           <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-[#0a0f10] px-4 py-2 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]">Waiting for Approval</span>
+                         )
                       )}
-                      <Button variant="outline" size="icon" className="h-11 w-11 rounded-2xl border-white/10 text-white/40 hover:text-white hover:bg-white/10 group">
+                      <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl border border-transparent text-white/40 hover:text-white hover:bg-white/5 group transition-all">
                          <MoreVertical className="w-4 h-4 transition-transform group-hover:rotate-90" />
                       </Button>
                    </div>
@@ -151,6 +202,74 @@ export default function OngoingTasks() {
              </div>
           )}
        </div>
+
+       {/* Submission Modal */}
+       <AnimatePresence>
+         {submittingTask && (
+           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setSubmittingTask(null)}
+               className="absolute inset-0 bg-black/80 backdrop-blur-md"
+             />
+             <motion.div 
+               initial={{ opacity: 0, scale: 0.9, y: 20 }}
+               animate={{ opacity: 1, scale: 1, y: 0 }}
+               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+               className="relative w-full max-w-lg bg-[#0d1213] border border-white/10 rounded-[40px] overflow-hidden shadow-2xl"
+             >
+               <div className="p-8 space-y-8">
+                 <div className="flex items-center justify-between">
+                   <div>
+                     <h4 className="text-xl font-bold text-white">Submit Work Proof</h4>
+                     <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mt-1">{(submittingTask.opportunityId as any)?.title || submittingTask.title}</p>
+                   </div>
+                   <Button variant="ghost" onClick={() => setSubmittingTask(null)} className="rounded-full h-10 w-10 p-0 text-white/20 hover:text-white">
+                     <XCircle className="w-6 h-6" />
+                   </Button>
+                 </div>
+
+                 <div className="space-y-6">
+                   <div className="space-y-2">
+                     <label className="text-[10px] font-black tracking-widest text-white/40 uppercase">Textual Proof / Work Description</label>
+                     <textarea 
+                       value={proofText}
+                       onChange={e => setProofText(e.target.value)}
+                       placeholder="Paste your content, links, or describe the work done..."
+                       className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-primary/50 transition-all font-medium text-sm"
+                     />
+                   </div>
+                   <div className="space-y-2">
+                      <label className="text-[10px] font-black tracking-widest text-white/40 uppercase">Direct Link (Optional)</label>
+                      <input 
+                       type="url"
+                       value={proofUrl}
+                       onChange={e => setProofUrl(e.target.value)}
+                       placeholder="https://google.docs/..."
+                       className="w-full h-12 bg-white/5 border border-white/10 rounded-2xl px-4 text-white outline-none focus:border-primary/50 transition-all font-medium text-sm"
+                      />
+                   </div>
+                 </div>
+
+                 <Button 
+                   onClick={handleSubmitWork}
+                   disabled={isSubmitting}
+                   className="w-full h-14 rounded-2xl bg-primary text-[#0a0f10] font-black text-lg group transition-all"
+                 >
+                   {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : (
+                     <>
+                       Confirm Submission
+                       <Send className="w-5 h-5 ml-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
+                     </>
+                   )}
+                 </Button>
+               </div>
+             </motion.div>
+           </div>
+         )}
+       </AnimatePresence>
     </div>
   )
 }

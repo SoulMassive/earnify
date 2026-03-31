@@ -48,9 +48,6 @@ const BenefitSchema = new mongoose.Schema({
   title: String, description: String, icon: String, order: Number
 });
 
-const LiveSessionSchema = new mongoose.Schema({
-  title: String, instructor: String, date: Date, category: String, imageUrl: String, spotsRemaining: Number
-});
 
 const SiteSettingsSchema = new mongoose.Schema({
   heroHeadline: String, heroSubheadline: String, totalStudentsEarning: Number, totalPaidOut: Number, totalOpportunities: Number, popularSearches: [String]
@@ -60,7 +57,6 @@ const Category = mongoose.models.Category || mongoose.model('Category', Category
 const Gig = mongoose.models.Gig || mongoose.model('Gig', GigSchema);
 const Testimonial = mongoose.models.Testimonial || mongoose.model('Testimonial', TestimonialSchema);
 const Benefit = mongoose.models.Benefit || mongoose.model('Benefit', BenefitSchema);
-const LiveSession = mongoose.models.LiveSession || mongoose.model('LiveSession', LiveSessionSchema);
 const SiteSettings = mongoose.models.SiteSettings || mongoose.model('SiteSettings', SiteSettingsSchema);
 
 // Data from lib/data/categories.ts (Hardcoded here for the script to be standalone)
@@ -138,9 +134,7 @@ const landingData = {
     { title: 'Find Opportunities', description: 'Browse and apply to vetted gigs, micro-tasks, and affiliate deals from top brands.', icon: 'Search', order: 2 },
     { title: 'Get Paid Instantly', description: 'Complete tasks and get your earnings transferred directly to your secure wallet.', icon: 'Wallet', order: 3 },
   ],
-  liveSessions: [
-    { title: 'Mastering High-Ticket Affiliate Sales', instructor: 'Varun Mayya', date: new Date(), category: 'Marketing', spotsRemaining: 15, imageUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2' },
-  ],
+
   siteSettings: {
     heroHeadline: 'Turn Your Free Hours Into Real Income',
     heroSubheadline: 'Earnify connects college students with affiliate deals, freelance gigs, and micro-tasks — built around your schedule.',
@@ -163,7 +157,6 @@ async function seed() {
       Gig.deleteMany({}),
       Testimonial.deleteMany({}),
       Benefit.deleteMany({}),
-      LiveSession.deleteMany({}),
       SiteSettings.deleteMany({}),
     ]);
     console.log('Cleaned old data.');
@@ -201,7 +194,6 @@ async function seed() {
     // Seed Landing Data
     await Testimonial.insertMany(landingData.testimonials);
     await Benefit.insertMany(landingData.benefits);
-    await LiveSession.insertMany(landingData.liveSessions);
     await SiteSettings.create(landingData.siteSettings);
     console.log('Seeded Landing Data.');
 

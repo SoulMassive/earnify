@@ -46,6 +46,20 @@ const UserSchema = new mongoose.Schema({
   skills: [String],
   interests: [String],
   earningGoal: String,
+  role: {
+    type: String,
+    enum: ['student', 'moderator', 'reviewer', 'admin', 'superadmin'],
+    default: 'student',
+  },
+  permissions: {
+    type: [String],
+    default: [],
+  },
+  status: {
+    type: String,
+    enum: ['active', 'blocked', 'suspended'],
+    default: 'active',
+  },
 }, { timestamps: true });
 
 // Check if the model is already exists in development (prevent overwrite)

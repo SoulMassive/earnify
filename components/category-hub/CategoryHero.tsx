@@ -99,7 +99,7 @@ export function CategoryHero({ slug }: { slug: string }) {
               </Button>
               <Button 
                 variant="outline" 
-                className="h-14 px-8 rounded-2xl border-white/10 hover:bg-white/5 text-white font-bold"
+                className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 text-white font-bold transition-all backdrop-blur-sm"
               >
                 View Resources
               </Button>
@@ -107,16 +107,15 @@ export function CategoryHero({ slug }: { slug: string }) {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[
               { label: 'Earning Potential', value: category.potential, icon: TrendingUp, color: 'text-primary' },
               { label: 'Avg. Income', value: category.avgIncome, icon: Users, color: 'text-blue-400' },
               { label: 'Demand Level', value: category.demandLevel, icon: Star, color: 'text-yellow-400' },
-              { label: 'Success Rate', value: category.successRate, icon: CheckCircle2, color: 'text-teal-400' },
             ].map((stat, i) => (
               <div 
                 key={stat.label}
-                className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm card-hover"
+                className={`bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm card-hover ${i === 2 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
               >
                 <div className={`p-2 rounded-xl bg-white/5 ${stat.color} inline-block mb-4`}>
                   <stat.icon className="w-6 h-6" />

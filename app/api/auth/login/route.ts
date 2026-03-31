@@ -23,7 +23,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const token = signToken({ id: user._id, email: user.email });
+    if (user.status === 'blocked') {
+      return NextResponse.json({ error: 'Your account has been blocked. Please contact support.' }, { status: 403 });
+    }
+
+    const token = signToken({ id: user._id, email: user.email, role: user.role });
 
     const response = NextResponse.json({ 
       success: true, 
@@ -36,7 +40,12 @@ export async function POST(req: Request) {
         points: user.points,
         totalEarned: user.totalEarned,
         globalRank: user.globalRank,
-        completedTasks: user.completedTasks
+        completedTasks: user.completedTasks,
+        college: user.college,
+        course: user.course,
+        year: user.year,
+        role: user.role,
+        status: user.status
       } 
     }, { status: 200 });
 

@@ -34,9 +34,12 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
           
           // Also fetch gigs for this category
           const gigsRes = await fetch(`/api/opportunities?category=${slug}`)
-          const gigs = await gigsRes.json()
+          const gigsData = await gigsRes.json()
           
-          setCategory({ ...cat, gigs: gigs || [] })
+          // Ensure gigs is always an array
+          const finalGigs = Array.isArray(gigsData) ? gigsData : []
+          
+          setCategory({ ...cat, gigs: finalGigs })
         }
       } catch (err) {
         console.error('Failed to fetch category page data:', err)
@@ -120,7 +123,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                    </div>
                 </div>
                 <CategoryFilters />
-                  <CategoryGigList gigs={category.gigs} categorySlug={slug} />
+                  <CategoryGigList gigs={category.gigs || []} categorySlug={slug} />
               </section>
             )}
 
@@ -128,7 +131,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                <section className="animate-fade-in">
                   <h2 className="text-2xl font-bold font-[family-name:var(--font-syne)] mb-6 tracking-tight">Learning Track</h2>
                   <div className="grid grid-cols-1 gap-6">
-                     <CategoryLearning resources={category.learningResources} />
+                     <CategoryLearning resources={category.learningResources || []} />
                      <div className="p-8 rounded-3xl bg-gradient-to-br from-[var(--primary)]/20 to-transparent border border-[var(--primary)]/30">
                         <h3 className="text-xl font-bold mb-4">Why Learning First Matters?</h3>
                         <p className="text-[var(--text-muted)] leading-relaxed mb-6">

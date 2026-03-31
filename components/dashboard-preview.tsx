@@ -4,9 +4,9 @@ import {
   Home, 
   Briefcase, 
   CheckSquare, 
+  MessageSquare,
   Users, 
   Wallet, 
-  Video, 
   Settings,
   TrendingUp,
   ArrowUpRight,
@@ -18,9 +18,9 @@ const sidebarItems = [
   { icon: Home, label: "Home", active: true },
   { icon: Briefcase, label: "Opportunities", active: false },
   { icon: CheckSquare, label: "My Tasks", active: false },
+  { icon: MessageSquare, label: "Messages", active: false },
   { icon: Users, label: "Referrals", active: false },
   { icon: Wallet, label: "Wallet", active: false },
-  { icon: Video, label: "Sessions", active: false },
   { icon: Settings, label: "Settings", active: false },
 ]
 

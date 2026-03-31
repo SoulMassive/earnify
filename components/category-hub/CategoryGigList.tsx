@@ -5,9 +5,11 @@ import { Zap, Briefcase, Star, Clock, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface Gig {
-  id: string;
+  id?: string;
+  _id?: string;
   title: string;
-  payout: number;
+  payout?: number;
+  reward?: number;
   deadline: string;
   difficulty: string;
   company: string;
@@ -22,9 +24,9 @@ interface CategoryGigListProps {
 export function CategoryGigList({ gigs, categorySlug }: CategoryGigListProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up">
-      {gigs.map((gig) => (
+      {gigs && Array.isArray(gigs) && gigs.map((gig) => (
         <div 
-          key={gig.id} 
+          key={gig._id || gig.id} 
           className="group relative bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-6 hover:bg-white/10 transition-all hover:-translate-y-1 shadow-2xl hover:shadow-[var(--primary)]/10"
         >
           {/* Subtle Glow Background */}
@@ -37,12 +39,12 @@ export function CategoryGigList({ gigs, categorySlug }: CategoryGigListProps) {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white group-hover:text-[var(--primary-light)] transition-colors line-clamp-1">{gig.title}</h3>
-                <p className="text-xs text-[var(--text-muted)] group-hover:text-white/60 transition-colors uppercase tracking-widest font-bold">{gig.company}</p>
+                <p className="text-xs text-[var(--text-muted)] group-hover:text-white/60 transition-colors uppercase tracking-widest font-bold">{gig.company || 'Verified Partner'}</p>
               </div>
             </div>
             
             <div className="text-right">
-              <div className="text-xl font-bold font-[family-name:var(--font-jetbrains)] text-[var(--primary-light)]">₹{gig.payout}</div>
+              <div className="text-xl font-bold font-[family-name:var(--font-jetbrains)] text-[var(--primary-light)]">₹{(gig.payout || gig.reward || 0).toLocaleString()}</div>
               <p className="text-[10px] text-[var(--text-muted)] uppercase font-bold tracking-wider">Payout</p>
             </div>
           </div>
@@ -52,9 +54,9 @@ export function CategoryGigList({ gigs, categorySlug }: CategoryGigListProps) {
               {gig.deadline}
             </span>
              <span className="px-2 py-1 rounded-md bg-[var(--primary)]/20 border border-[var(--primary)]/30 text-[10px] font-bold text-[var(--primary-light)] uppercase tracking-tight">
-              {gig.difficulty}
+              {gig.difficulty || 'Intermediate'}
             </span>
-            {gig.tags.map(tag => (
+            {gig.tags && Array.isArray(gig.tags) && gig.tags.map(tag => (
               <span key={tag} className="px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase">
                 {tag}
               </span>
@@ -63,13 +65,13 @@ export function CategoryGigList({ gigs, categorySlug }: CategoryGigListProps) {
 
           <div className="flex items-center gap-4 mt-auto">
             <Link 
-              href={`/categories/${categorySlug}/${gig.id}`}
+              href={`/categories/${categorySlug}/${gig._id || gig.id}`}
               className="flex-1 btn-primary-gradient h-10 rounded-xl font-bold shadow-lg shadow-[var(--primary)]/20 group-hover:shadow-[var(--primary)]/40 transition-all flex items-center justify-center text-sm"
             >
               Apply
             </Link>
             <Link 
-              href={`/categories/${categorySlug}/${gig.id}`}
+              href={`/categories/${categorySlug}/${gig._id || gig.id}`}
               className="w-10 h-10 p-0 rounded-xl border-white/10 bg-white/5 hover:bg-white/10 shrink-0 flex items-center justify-center"
             >
                <ExternalLink className="w-4 h-4 text-white" />

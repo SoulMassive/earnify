@@ -16,14 +16,6 @@ const BenefitSchema = new mongoose.Schema({
   order: Number,
 });
 
-const LiveSessionSchema = new mongoose.Schema({
-  title: String,
-  instructor: String,
-  date: Date,
-  category: String,
-  imageUrl: String,
-  spotsRemaining: Number,
-});
 
 const SiteSettingsSchema = new mongoose.Schema({
   heroHeadline: String,
@@ -36,5 +28,5 @@ const SiteSettingsSchema = new mongoose.Schema({
 
 export const Testimonial = mongoose.models.Testimonial || mongoose.model('Testimonial', TestimonialSchema);
 export const Benefit = mongoose.models.Benefit || mongoose.model('Benefit', BenefitSchema);
-export const LiveSession = mongoose.models.LiveSession || mongoose.model('LiveSession', LiveSessionSchema);
+
 export const SiteSettings = mongoose.models.SiteSettings || mongoose.model('SiteSettings', SiteSettingsSchema);

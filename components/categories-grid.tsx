@@ -12,16 +12,31 @@ export function CategoriesGrid() {
   const [categories, setCategories] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
+  const mockDefaultCategories = [
+    { _id: 'fallback-marketing', slug: 'marketing', title: 'Affiliate Marketing', potential: '₹15,000–₹60,000/mo' },
+    { _id: 'fallback-writing', slug: 'writing', title: 'Content Writing', potential: '₹10,000–₹50,000/mo' },
+    { _id: 'fallback-development', slug: 'development', title: 'Coding & Dev', potential: '₹25,000–₹1.2L/mo' },
+    { _id: 'fallback-design', slug: 'design', title: 'Graphic Design', potential: '₹12,000–₹80,000/mo' },
+    { _id: 'fallback-data', slug: 'data', title: 'Data & Virtual', potential: '₹8,000–₹35,000/mo' },
+    { _id: 'fallback-video', slug: 'video', title: 'Video & Animation', potential: '₹18,000–₹1L/mo' },
+    { _id: 'fallback-tutoring', slug: 'tutoring', title: 'Online Tutoring', potential: '₹15,000–₹75,000/mo' },
+    { _id: 'fallback-social', slug: 'social', title: 'Social Media', potential: '₹10,000–₹60,000/mo' },
+  ]
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch('/api/page-content')
         const data = await res.json()
-        if (data.categories) {
+        if (data.categories && data.categories.length > 0) {
           setCategories(data.categories)
+        } else {
+          // Fallback if seeded data is missing
+          setCategories(mockDefaultCategories)
         }
       } catch (err) {
         console.error('Failed to fetch categories:', err)
+        setCategories(mockDefaultCategories)
       } finally {
         setLoading(false)
       }

@@ -17,7 +17,11 @@ const OpportunitySchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, 'Please provide a category.'],
-    enum: ['Development', 'Design', 'Marketing', 'Writing', 'Data', 'Other'],
+    enum: {
+      values: ['development', 'design', 'marketing', 'writing', 'data', 'video', 'tutoring', 'social', 'Other'],
+      message: '{VALUE} is not a supported category'
+    },
+    lowercase: true,
   },
   status: {
     type: String,
@@ -33,6 +37,21 @@ const OpportunitySchema = new mongoose.Schema({
   },
   deadline: {
     type: Date,
+  },
+  requirements: [String],
+  deliverables: [String],
+  spotsTotal: {
+    type: Number,
+    default: 10,
+  },
+  spotsTaken: {
+    type: Number,
+    default: 0,
+  },
+  difficulty: {
+    type: String,
+    enum: ['Beginner', 'Intermediate', 'Expert'],
+    default: 'Beginner',
   },
 }, { timestamps: true });
 

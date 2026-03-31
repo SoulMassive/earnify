@@ -19,17 +19,9 @@ export default function PayoutsDashboard() {
   const [transactions, setTransactions] = useState<any[]>([])
 
   useEffect(() => {
-    // Mocking transaction history
     const fetchTransactions = async () => {
-      await new Promise(r => setTimeout(r, 1000))
-      
-      const mockHistory = [
-        { _id: 'tx-1', type: 'Credit', amount: 1200, title: 'Write 10 Instagram Captions', date: 'Oct 12, 2023', status: 'Settled', method: 'Earnify Wallet' },
-        { _id: 'tx-2', type: 'Credit', amount: 450, title: 'Referral Bonus', date: 'Oct 10, 2023', status: 'Settled', method: 'Referral' },
-        { _id: 'tx-3', type: 'Withdrawal', amount: 500, title: 'Bank Withdrawal', date: 'Oct 08, 2023', status: 'In Review', method: 'UPI' },
-        { _id: 'tx-4', type: 'Credit', amount: 8500, title: 'Next.js App Build', date: 'Oct 05, 2023', status: 'Settled', method: 'Project' },
-      ]
-      setTransactions(mockHistory)
+      // In real app, fetch from /api/payouts?userId=user.id
+      setTransactions([])
       setLoading(false)
     }
     fetchTransactions()

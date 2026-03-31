@@ -2,7 +2,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
-interface User {
+export interface User {
+  id: string
   name: string
   email: string
   avatar: string
@@ -12,6 +13,11 @@ interface User {
   points: number
   globalRank: number
   completedTasks: number
+  college?: string
+  course?: string
+  year?: string
+  role?: string
+  status?: string
 }
 
 interface AuthContextType {
@@ -38,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (userData: any) => {
     const newUser: User = {
+      id: userData.id || userData._id,
       name: userData.name || 'Student Earner',
       email: userData.email,
       avatar: userData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userData.email}`,
@@ -46,7 +53,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       totalEarned: userData.totalEarned || 0,
       points: userData.points || 0,
       globalRank: userData.globalRank || 0,
-      completedTasks: userData.completedTasks || 0
+      completedTasks: userData.completedTasks || 0,
+      college: userData.college || '',
+      course: userData.course || '',
+      year: userData.year || '',
+      role: userData.role || 'student',
+      status: userData.status || 'active',
     }
     setUser(newUser)
     localStorage.setItem('earnify_user', JSON.stringify(newUser))

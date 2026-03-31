@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       password: hashedPassword,
     });
 
-    const token = signToken({ id: newUser._id, email: newUser.email });
+    const token = signToken({ id: newUser._id, email: newUser.email, role: newUser.role });
 
     const response = NextResponse.json({ 
       success: true, 
@@ -38,7 +38,12 @@ export async function POST(req: Request) {
         points: newUser.points,
         totalEarned: newUser.totalEarned,
         globalRank: newUser.globalRank,
-        completedTasks: newUser.completedTasks
+        completedTasks: newUser.completedTasks,
+        college: newUser.college,
+        course: newUser.course,
+        year: newUser.year,
+        role: newUser.role,
+        status: newUser.status
       } 
     }, { status: 201 });
 

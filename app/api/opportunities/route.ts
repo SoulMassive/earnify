@@ -2,10 +2,20 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Opportunity } from '@/lib/models/Opportunity';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await connectDB();
-    const opportunities = await Opportunity.find({ status: 'Open' }).sort({ createdAt: -1 });
+    const { searchParams } = new URL(req.url);
+    const categoryQuery = searchParams.get('category');
+    
+    let filter: any = { status: 'Open' };
+    if (categoryQuery) {
+      // Case-insensitive search
+      filter.category = { $regex: new RegExp(`^${categoryQuery}$`, 'i') };
+    }
+
+    const opportunities = await Opportunity.find(filter).sort({ createdAt: -1 });
+    
     return NextResponse.json(opportunities);
   } catch (error: any) {
     console.error('Opportunities error:', error);

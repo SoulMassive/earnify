@@ -41,12 +41,11 @@ export default function OverviewPage() {
   return (
     <div className="space-y-10 animate-fade-in">
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
           { label: 'Available Balance', value: `₹${(user.balance || 0).toLocaleString()}`, icon: Wallet, color: 'text-primary' },
           { label: 'Total Earned', value: `₹${(user.totalEarned || 0).toLocaleString()}`, icon: BarChart3, color: 'text-blue-400' },
           { label: 'Task Completion', value: completionRate, icon: CheckSquare, color: 'text-teal-400' },
-          { label: 'Global Rank', value: (user.globalRank || 0) > 0 ? `#${user.globalRank}` : 'Unranked', icon: Trophy, color: 'text-amber-400' },
         ].map((stat, i) => (
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { 
   BarChart3, Wallet, Trophy, 
   Zap, Search, Bell, Settings, LogOut,
-  Clock, UserCircle, Loader2
+  Clock, UserCircle, Loader2, ShieldCheck, MessageSquare
 } from 'lucide-react'
 import { useAuth } from '@/components/auth/AuthContext'
 import { useRouter, usePathname } from 'next/navigation'
@@ -39,6 +39,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { icon: BarChart3, label: 'Overview', path: '/dashboard' },
     { icon: Search, label: 'Find Gigs', path: '/dashboard/gigs' },
     { icon: Clock, label: 'Ongoing Tasks', path: '/dashboard/tasks' },
+    { icon: MessageSquare, label: 'Messages', path: '/dashboard/messages' },
     { icon: Wallet, label: 'Payouts', path: '/dashboard/payouts' },
     { icon: Trophy, label: 'Leaderboard', path: '/dashboard/leaderboard' },
   ]
@@ -73,6 +74,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           ))}
         </nav>
+
+        {/* Admin Panel Link - only for admins */}
+        {user.role === 'admin' && (
+          <button
+            onClick={() => router.push('/admin')}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all mt-2 bg-[var(--primary)]/10 text-[var(--primary-light)] border border-[var(--primary)]/20 hover:bg-[var(--primary)]/20 font-bold"
+          >
+            <ShieldCheck className="w-5 h-5" />
+            Admin Panel
+          </button>
+        )}
 
         <div className="mt-auto pt-6 border-t border-white/5 space-y-4">
           <button 
@@ -131,6 +143,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   >
                      <UserCircle className="w-4 h-4" /> My Profile
                   </button>
+                  {user.role === 'admin' && (
+                    <button 
+                      onClick={() => { router.push('/admin'); setShowProfileMenu(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[var(--primary-light)] hover:bg-[var(--primary)]/10 transition-colors"
+                    >
+                       <ShieldCheck className="w-4 h-4" /> Admin Panel
+                    </button>
+                  )}
                   <button 
                     onClick={() => { router.push('/dashboard/settings'); setShowProfileMenu(false); }}
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors"

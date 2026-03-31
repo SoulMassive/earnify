@@ -11,6 +11,8 @@ import { useAuth } from '@/components/auth/AuthContext'
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const router = useRouter()
   const { login } = useAuth()
 
@@ -18,13 +20,32 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
     
-    // Simulate auth logic
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      
+      const data = await res.json()
+      
+      if (res.ok) {
+        login(data.user)
+        toast.success('Welcome back to Earnify!')
+        // Redirect based on role
+        if (data.user.role === 'admin') {
+          router.push('/admin')
+        } else {
+          router.push('/dashboard')
+        }
+      } else {
+        toast.error(data.error || 'Login failed')
+      }
+    } catch (err) {
+      toast.error('Something went wrong. Please try again.')
+    } finally {
       setIsLoading(false)
-      login({ email: 'student@earnify.com', name: 'Student Earner' })
-      toast.success('Welcome back to Earnify!')
-      router.push('/dashboard')
-    }, 1500)
+    }
   }
 
   const containerVariants = {
@@ -79,7 +100,8 @@ export default function LoginPage() {
             <input
               type="email"
               required
-              placeholder="shikhar@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-white/5 bg-white/5 py-4 pr-4 pl-12 text-sm text-white outline-none transition-all placeholder:text-white/10 hover:bg-white/[0.07] focus:border-primary/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-primary/10"
             />
           </div>
@@ -101,7 +123,8 @@ export default function LoginPage() {
             <input
               type={showPassword ? 'text' : 'password'}
               required
-              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-xl border border-white/5 bg-white/5 py-4 pr-12 pl-12 text-sm text-white outline-none transition-all placeholder:text-white/10 hover:bg-white/[0.07] focus:border-primary/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-primary/10"
             />
             <button
