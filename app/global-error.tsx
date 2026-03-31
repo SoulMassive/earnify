@@ -1,30 +1,51 @@
-'use client'
-
-import React from 'react'
+"use client";
 
 export default function GlobalError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <div className="min-h-screen bg-[#0a0f10] text-white flex flex-col items-center justify-center p-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Something went wrong!</h2>
-          <p className="text-white/40 mb-8 max-w-md">
-            We encountered a critical error. Please try refreshing the page or contact support if the issue persists.
-          </p>
-          <button
-            onClick={() => reset()}
-            className="bg-primary text-[#0a0f10] px-8 py-3 rounded-full font-bold hover:bg-primary-dark transition-all"
-          >
-            Try again
-          </button>
-        </div>
+    <html>
+      <body
+        style={{
+          margin: 0,
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: "16px",
+          fontFamily: "system-ui, sans-serif",
+          background: "#f1f5e2",
+          color: "#1c2b2c",
+        }}
+      >
+        <div style={{ fontSize: "48px", fontWeight: 800 }}>Earnify</div>
+        <h2 style={{ fontSize: "22px", fontWeight: 700, margin: 0 }}>
+          Something went wrong
+        </h2>
+        <p style={{ color: "#5a7a7b", fontSize: "15px", margin: 0 }}>
+          {error?.message || "An unexpected error occurred."}
+        </p>
+        <button
+          onClick={reset}
+          style={{
+            background: "linear-gradient(135deg, #6d9c9f, #4a8b8e)",
+            color: "#fff",
+            border: "none",
+            borderRadius: "100px",
+            padding: "12px 28px",
+            fontSize: "15px",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          Try Again
+        </button>
       </body>
     </html>
-  )
+  );
 }

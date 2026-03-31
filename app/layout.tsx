@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { DM_Sans, Syne, JetBrains_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
+import { Providers } from "@/components/providers";
 import './globals.css'
 
 const dmSans = DM_Sans({ 
@@ -27,23 +27,16 @@ export const metadata: Metadata = {
   keywords: 'student earning, freelance, affiliate marketing, micro tasks, side income, college students',
 }
 
-import { Toaster } from 'sonner'
-import { AuthProvider } from '@/components/auth/AuthContext'
-
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        <AuthProvider>
-          {children}
-          <Toaster position="top-center" richColors />
-          <Analytics />
-        </AuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }
