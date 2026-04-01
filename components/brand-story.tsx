@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -52,6 +52,20 @@ export function BrandStory() {
     offset: ["start end", "end start"],
   });
 
+  const [particles, setParticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 15 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100 + "%", 
+        y: Math.random() * 100 + "%",
+        opacity: Math.random() * 0.5,
+        duration: 5 + Math.random() * 5
+      }))
+    );
+  }, []);
+
   const handleCTA = () => {
     if (loading) return;
     if (isAuthenticated) {
@@ -71,21 +85,21 @@ export function BrandStory() {
         <div className="absolute top-1/4 -left-24 w-96 h-96 bg-blue-100/30 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 -right-24 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl" />
         {/* Floating Particles */}
-        {Array.from({ length: 15 }).map((_, i) => (
+        {particles.map((particle) => (
           <motion.div
-            key={i}
+            key={particle.id}
             className="absolute w-1 h-1 bg-primary/20 rounded-full"
             initial={{ 
-              x: Math.random() * 100 + "%", 
-              y: Math.random() * 100 + "%",
-              opacity: Math.random() * 0.5 
+              x: particle.x, 
+              y: particle.y,
+              opacity: particle.opacity 
             }}
             animate={{ 
               y: ["0%", "-20%", "0%"],
               opacity: [0.2, 0.5, 0.2]
             }}
             transition={{ 
-              duration: 5 + Math.random() * 5, 
+              duration: particle.duration, 
               repeat: Infinity, 
               ease: "easeInOut" 
             }}
