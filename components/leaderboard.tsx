@@ -5,6 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/hooks/useAuth"
 
 interface LeaderboardUser {
   _id: string;
@@ -47,12 +49,14 @@ function getTier(points: number) {
   if (points >= 600) return "Diamond"
   if (points >= 300) return "Gold"
   if (points >= 100) return "Silver"
-  return "Bronze"
+  return null
 }
 
 export function Leaderboard() {
   const [users, setUsers] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter()
+  const { isAuthenticated, loading: authLoading } = useAuth()
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -73,15 +77,23 @@ export function Leaderboard() {
   }, []);
 
   const handleJoin = () => {
+    if (authLoading) return
+
     toast.success("Enrolling you into the Season 1 Rankings!", {
       description: "Complete tasks to climb the leaderboard."
     });
+
+    if (isAuthenticated) {
+       router.push('/explore')
+    } else {
+       router.push('/signup')
+    }
   }
 
   const handleUserClick = (name: string, points: number) => {
     const tier = getTier(points)
     toast.info(`${name}'s Stats`, {
-      description: `Current Rank: ${tier} Tier. Total points: ${points}.`
+      description: `${tier ? `Current Rank: ${tier} Tier. ` : ""}Total points: ${points}.`
     });
   }
 
@@ -152,14 +164,16 @@ export function Leaderboard() {
                     <div>
                       <p className="font-bold text-[var(--text-primary)] text-base group-hover:text-[var(--primary)] transition-colors">{user.name}</p>
                       <div className="flex items-center gap-2">
-                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter ${
-                           tier === 'Diamond' ? 'bg-blue-100 text-blue-600' : 
-                           tier === 'Gold' ? 'bg-yellow-100 text-yellow-600' :
-                           tier === 'Silver' ? 'bg-gray-100 text-gray-600' : 'bg-orange-100 text-orange-600'
-                         }`}>
-                           {tier} Tier
-                         </span>
-                         <span className="text-[10px] text-[var(--text-secondary)] font-medium">Verified Earner</span>
+                        {tier && (
+                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter ${
+                             tier === 'Diamond' ? 'bg-blue-100 text-blue-600' : 
+                             tier === 'Gold' ? 'bg-yellow-100 text-yellow-600' :
+                             tier === 'Silver' ? 'bg-gray-100 text-gray-600' : ''
+                           }`}>
+                             {tier} Tier
+                           </span>
+                        )}
+                        <span className="text-[10px] text-[var(--text-secondary)] font-medium">Verified Earner</span>
                       </div>
                     </div>
                   </div>

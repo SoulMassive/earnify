@@ -6,11 +6,13 @@
 :root {
   /* Earnify Color Palette */
   --primary: #6d9c9f;
+  --primary-rgb: 109, 156, 159;
   --primary-dark: #2d7a7e;
   --primary-light: #e8f4f5;
   --secondary: #f1f5e2;
   --accent: #3d7a7e;
   --cta: #f59e0b;
+  --cta-rgb: 245, 158, 11;
   --cta-dark: #d97706;
   --dark-surface: #1a1a2e;
   --dark-bg: #1a2e2f;

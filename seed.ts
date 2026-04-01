@@ -14,11 +14,11 @@ const seedData = async () => {
     const hashedPassword = await bcrypt.hash('password123', 12);
     
     const users = await User.create([
-      { name: 'Alex Rivera', email: 'alex@earnify.io', password: hashedPassword, points: 15420, balance: 2450.50, rank: 'Platinum', completedTasks: 124 },
+      { name: 'Alex Rivera', email: 'alex@earnify.io', password: hashedPassword, points: 15420, balance: 2450.50, rank: 'Diamond', completedTasks: 124 },
       { name: 'Sarah Chen', email: 'sarah@earnify.io', password: hashedPassword, points: 12850, balance: 1840.20, rank: 'Gold', completedTasks: 98 },
       { name: 'Marcus Bell', email: 'marcus@earnify.io', password: hashedPassword, points: 9640, balance: 1210.00, rank: 'Silver', completedTasks: 76 },
       { name: 'Elena Petrova', email: 'elena@earnify.io', password: hashedPassword, points: 8420, balance: 945.80, rank: 'Silver', completedTasks: 62 },
-      { name: 'James Wilson', email: 'james@earnify.io', password: hashedPassword, points: 7150, balance: 820.40, rank: 'Bronze', completedTasks: 45 },
+      { name: 'James Wilson', email: 'james@earnify.io', password: hashedPassword, points: 7150, balance: 820.40, rank: 'Silver', completedTasks: 45 },
     ]);
 
     console.log('Seeding opportunities...');

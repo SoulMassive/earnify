@@ -30,7 +30,7 @@ export function CategoryDashboard({ categoryTitle }: CategoryDashboardProps) {
           <div className="mt-4 w-full h-1 bg-white/5 rounded-full overflow-hidden">
              <div className="w-0 h-full bg-[var(--primary)] group-hover:w-full transition-all duration-1000 ease-out" />
           </div>
-          <p className="text-[10px] text-[var(--text-muted)] mt-2 font-bold uppercase tracking-tighter">Rs. 5000 to reach Bronze Rank</p>
+          <p className="text-[10px] text-[var(--text-muted)] mt-2 font-bold uppercase tracking-tighter">Rs. 5000 to reach Silver Rank</p>
         </div>
 
         {/* Quick Stats Grid */}

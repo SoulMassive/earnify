@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/hero-section"
 import { CategoryStrip } from "@/components/category-strip"
 import { CategoriesGrid } from "@/components/categories-grid"
 import { OpportunityCards } from "@/components/opportunity-cards"
+import { BrandStory } from "@/components/brand-story"
 import { HowItWorks } from "@/components/how-it-works"
 import { Testimonials } from "@/components/testimonials"
 import { Leaderboard } from "@/components/leaderboard"
@@ -18,6 +19,7 @@ export default function HomePage() {
       <HeroSection />
       <CategoryStrip />
       <CategoriesGrid />
+      <BrandStory />
       <OpportunityCards />
       <HowItWorks />
       <DashboardPreview />

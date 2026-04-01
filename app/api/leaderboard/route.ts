@@ -5,7 +5,7 @@ import { User } from '@/lib/models/User';
 export async function GET() {
   try {
     await connectDB();
-    const topUsers = await User.find({})
+    const topUsers = await User.find({ role: 'student' })
       .sort({ points: -1 })
       .limit(10)
       .select('name avatar points balance completedTasks totalEarned globalRank');

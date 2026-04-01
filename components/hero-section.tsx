@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Play, Search, TrendingUp, Users, Briefcase, Star, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/hooks/useAuth"
 
 const stats = [
   { label: "Students Earning", value: 12400, prefix: "", suffix: "+" },
@@ -48,6 +49,7 @@ function AnimatedCounter({ value, prefix, suffix }: { value: number; prefix: str
 }
 
 export function HeroSection() {
+  const { isAuthenticated, loading: loadingAuth } = useAuth()
   const [siteSettings, setSiteSettings] = useState<any>(null);
   const [statsData, setStatsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,10 +129,12 @@ export function HeroSection() {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button onClick={() => router.push('/signup')} className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base">
-                Explore Opportunities
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start min-h-[48px]">
+              {loadingAuth ? (
+                <div className="h-12 w-48 bg-white/5 rounded-full animate-pulse border border-white/10" />
+              ) : (
+                <ExploreButton />
+              )}
             </div>
           </div>
 
@@ -194,5 +198,29 @@ export function HeroSection() {
         </div>
       </div>
     </section>
+  )
+}
+
+function ExploreButton() {
+  const router = useRouter()
+  const { isAuthenticated, loading } = useAuth()
+
+  const handleClick = () => {
+    if (loading) return
+
+    if (isAuthenticated) {
+      router.push("/explore")
+    } else {
+      router.push("/signup")
+    }
+  }
+
+  return (
+    <Button 
+      onClick={handleClick} 
+      className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base hover:shadow-[0_0_20px_rgba(var(--cta-rgb),0.4)] hover:scale-105 transition-all duration-300 border-0"
+    >
+      Explore Opportunities
+    </Button>
   )
 }
