@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Conversation } from '@/lib/models/Conversation';
+import { Opportunity } from '@/lib/models/Opportunity';
+import { User } from '@/lib/models/User';
 import { getUserFromToken } from '@/lib/auth';
 
 export async function GET(req: Request) {

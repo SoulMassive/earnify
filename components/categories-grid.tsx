@@ -153,7 +153,7 @@ export function CategoriesGrid() {
   }
 
   return (
-    <section className="relative py-24 sm:py-32 bg-slate-50 overflow-hidden" id="categories">
+    <section className="relative py-24 sm:py-32 bg-slate-50 overflow-hidden" id="explore">
        {/* Background WASH */}
        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--primary)]/5 to-transparent pointer-events-none" />
        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-[var(--primary)]/10 rounded-full blur-[120px] animate-pulse pointer-events-none" />

@@ -171,21 +171,6 @@ export function BrandStory() {
               <StepCard key={step.id} step={step} idx={idx} />
             ))}
             
-            {/* CTA at Bottom */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="pt-12 flex justify-center lg:justify-start"
-            >
-              <Button 
-                onClick={handleCTA}
-                className="btn-shimmer group h-14 px-10 rounded-full font-bold text-lg border-none shadow-2xl shadow-primary/20"
-              >
-                Start Your First Earning
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </motion.div>
           </div>
 
         </div>

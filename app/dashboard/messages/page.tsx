@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useAuth } from "@/components/auth/AuthContext"
 import { ConversationList } from "@/components/chat/ConversationList"
 import { ChatWindow } from "@/components/chat/ChatWindow"
@@ -13,27 +13,47 @@ export default function MessagesPage() {
   const searchParams = useSearchParams()
   const initialId = searchParams.get('id')
   
-  const [conversations, setConversations] = useState([])
+  const [conversations, setConversations] = useState<any[]>([])
   const [activeId, setActiveId] = useState<string | null>(initialId)
   const [loading, setLoading] = useState(true)
+  const initializedRef = useRef(false)
 
   useEffect(() => {
     const fetchConversations = async () => {
       try {
         const res = await fetch('/api/conversations')
-        const data = await res.json()
-        setConversations(data)
         
-        // Use query param id if present, else fallback to first conversation
-        if (data.length > 0) {
-          if (initialId) {
+        let data;
+        try {
+          data = await res.json();
+        } catch (err) {
+          const text = await res.text().catch(() => 'No text content');
+          console.error("Failed to parse response as JSON. Response was:", text.substring(0, 200));
+          setConversations([]);
+          return;
+        }
+        
+        if (!res.ok) {
+           console.error("Conversations fetch failed:", data?.error)
+           setConversations([])
+           return
+        }
+
+        const validData = Array.isArray(data) ? data : []
+        setConversations(validData)
+        
+        // Only set activeId on first load, not on every poll
+        if (!initializedRef.current && validData.length > 0) {
+          initializedRef.current = true
+          if (initialId && validData.some(c => c._id === initialId)) {
             setActiveId(initialId)
           } else if (!activeId) {
-            setActiveId(data[0]._id)
+            setActiveId(validData[0]._id)
           }
         }
       } catch (error) {
-        console.error("Failed to fetch conversations:", error)
+        console.error("Network error fetching conversations:", error)
+        setConversations([])
       } finally {
         setLoading(false)
       }
@@ -44,7 +64,7 @@ export default function MessagesPage() {
     // Refresh conversation previews every 10s
     const interval = setInterval(fetchConversations, 10000)
     return () => clearInterval(interval)
-  }, [activeId])
+  }, [initialId])
 
   if (loading) {
     return (

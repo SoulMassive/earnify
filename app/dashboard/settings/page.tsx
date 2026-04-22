@@ -17,6 +17,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [name, setName] = useState(user?.name || '')
   const [college, setCollege] = useState(user?.college || '')
+  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications'>('profile')
   
   if (!user) return null
 
@@ -81,15 +82,15 @@ export default function SettingsPage() {
              </div>
 
              <div className="bg-white/5 border border-white/10 p-2 rounded-3xl">
-                <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl bg-white/5 text-white font-bold transition-all border border-white/10">
-                   <User className="w-4 h-4 text-primary" />
+                <button onClick={() => setActiveTab('profile')} className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'profile' ? 'bg-white/5 text-white border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
+                   <User className={`w-4 h-4 ${activeTab === 'profile' ? 'text-primary' : ''}`} />
                    Profile Details
                 </button>
-                <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-white/40 hover:text-white hover:bg-white/5 transition-all">
-                   <Key className="w-4 h-4" /> Security & Privacy
+                <button onClick={() => setActiveTab('security')} className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'security' ? 'bg-white/5 text-white border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
+                   <Key className={`w-4 h-4 ${activeTab === 'security' ? 'text-primary' : ''}`} /> Security & Privacy
                 </button>
-                <button className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-white/40 hover:text-white hover:bg-white/5 transition-all">
-                   <Bell className="w-4 h-4" /> Notifications
+                <button onClick={() => setActiveTab('notifications')} className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all ${activeTab === 'notifications' ? 'bg-white/5 text-white border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
+                   <Bell className={`w-4 h-4 ${activeTab === 'notifications' ? 'text-primary' : ''}`} /> Notifications
                 </button>
                 <button onClick={logout} className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-red-400/60 hover:text-red-400 hover:bg-red-400/5 transition-all mt-4">
                    <LogOut className="w-4 h-4" /> Sign Out
@@ -99,6 +100,7 @@ export default function SettingsPage() {
 
           {/* Form Content */}
           <div className="lg:col-span-2 space-y-8">
+             {activeTab === 'profile' && (
              <form onSubmit={handleUpdate} className="bg-white/5 border border-white/10 p-10 rounded-[40px] space-y-8 backdrop-blur-sm">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                    <div className="space-y-3">
@@ -157,13 +159,52 @@ export default function SettingsPage() {
                    </Button>
                 </div>
              </form>
+             )}
+
+             {activeTab === 'security' && (
+               <div className="bg-white/5 border border-white/10 p-10 rounded-[40px] space-y-8 backdrop-blur-sm">
+                 <h2 className="text-xl font-bold text-white">Security & Privacy</h2>
+                 <p className="text-sm text-white/50">Manage your password, login sessions, and privacy preferences.</p>
+                 <div className="space-y-4">
+                   <Button variant="outline" className="w-full justify-start h-14 border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold" onClick={() => toast("A password reset link has been sent to your email.")}>
+                     <Key className="w-5 h-5 mr-3 text-primary" /> Change Password
+                   </Button>
+                   <Button variant="outline" className="w-full justify-start h-14 border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold" onClick={() => toast("2FA setup requires mobile verification.")}>
+                     <Shield className="w-5 h-5 mr-3 text-primary" /> Enable Two-Factor Authentication
+                   </Button>
+                 </div>
+               </div>
+             )}
+
+             {activeTab === 'notifications' && (
+               <div className="bg-white/5 border border-white/10 p-10 rounded-[40px] space-y-8 backdrop-blur-sm">
+                 <h2 className="text-xl font-bold text-white">Notifications</h2>
+                 <p className="text-sm text-white/50">Choose what alerts you want to receive.</p>
+                 <div className="space-y-4">
+                   {[
+                     "Email me about new gigs matching my skills",
+                     "Email me when my gig application is approved",
+                     "Send daily leaderboard updates"
+                   ].map((item, i) => (
+                     <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl">
+                       <span className="text-sm font-medium text-white/80">{item}</span>
+                       <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10" onClick={() => toast("Preferences saved.")}>Toggle</Button>
+                     </div>
+                   ))}
+                 </div>
+               </div>
+             )}
 
              <div className="bg-red-400/5 border border-red-400/10 p-8 rounded-[40px] flex items-center justify-between gap-6 group">
                 <div>
                    <h3 className="text-red-400 font-bold mb-1">Danger Zone</h3>
                    <p className="text-xs text-red-400/60 font-medium max-w-sm">Permanently delete your account and all associated earnings. This action is irreversible.</p>
                 </div>
-                <Button variant="ghost" className="text-red-400 hover:text-red-400 hover:bg-red-400/10 font-bold px-6 h-12 rounded-2xl group-hover:scale-105 transition-all">
+                <Button 
+                    variant="ghost" 
+                    onClick={() => toast("Account deletion initiated. Support will contact you shortly to confirm.")}
+                    className="text-red-400 hover:text-red-400 hover:bg-red-400/10 font-bold px-6 h-12 rounded-2xl group-hover:scale-105 transition-all"
+                 >
                    Delete Account
                 </Button>
              </div>

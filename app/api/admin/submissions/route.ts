@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Submission } from '@/lib/models/Submission';
 import { User } from '@/lib/models/User';
+import { Opportunity } from '@/lib/models/Opportunity';
 import { isAdmin } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';

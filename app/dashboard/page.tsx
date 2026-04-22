@@ -11,6 +11,7 @@ import {
 import { useAuth } from '@/components/auth/AuthContext'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
+import { DashboardStepGuide } from '@/components/dashboard-step-guide'
 
 export default function OverviewPage() {
   const { user } = useAuth()
@@ -41,6 +42,8 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-10 animate-fade-in">
+      <DashboardStepGuide />
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[

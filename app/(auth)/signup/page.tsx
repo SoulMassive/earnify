@@ -181,6 +181,8 @@ export default function SignupPage() {
         </motion.button>
       </form>
 
+
+
       {/* Divider */}
       <motion.div variants={itemVariants} className="my-8 flex items-center gap-4">
         <div className="h-[1px] flex-1 bg-white/5" />

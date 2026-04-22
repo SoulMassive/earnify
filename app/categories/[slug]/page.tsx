@@ -75,7 +75,10 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     <main className="min-h-screen bg-[var(--dark-bg)] text-white">
       <Navbar />
       
-      <CategoryHero slug={slug} />
+      <CategoryHero slug={slug} onViewResources={() => {
+        setActiveTab('learn');
+        document.getElementById('learning-track')?.scrollIntoView({ behavior: 'smooth' });
+      }} />
 
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 mb-12 relative z-10">
         <Link 
@@ -129,7 +132,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             )}
 
             {activeTab === 'learn' && (
-               <section className="animate-fade-in">
+               <section id="learning-track" className="animate-fade-in">
                   <h2 className="text-2xl font-bold font-[family-name:var(--font-syne)] mb-6 tracking-tight">Learning Track</h2>
                   <div className="grid grid-cols-1 gap-6">
                      <CategoryLearning resources={category.learningResources || []} />

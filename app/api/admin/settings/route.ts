@@ -6,11 +6,6 @@ import { getUserFromToken } from '@/lib/auth';
 
 export async function GET(req: Request) {
   try {
-    const user: any = await getUserFromToken();
-    if (!user || (user.role !== 'admin' && user.role !== 'superadmin')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     await connectDB();
     let settings = await SystemSettings.findOne();
     

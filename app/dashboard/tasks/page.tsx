@@ -10,6 +10,12 @@ import {
   FileText, Send, MoreVertical, XCircle, Zap
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -175,9 +181,24 @@ export default function OngoingTasks() {
                            <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-[#0a0f10] px-4 py-2 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]">Waiting for Approval</span>
                          )
                       )}
-                      <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl border border-transparent text-white/40 hover:text-white hover:bg-white/5 group transition-all">
-                         <MoreVertical className="w-4 h-4 transition-transform group-hover:rotate-90" />
-                      </Button>
+                      <DropdownMenu>
+                         <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-2xl border border-transparent text-white/40 hover:text-white hover:bg-white/5 group transition-all">
+                               <MoreVertical className="w-4 h-4 transition-transform group-hover:rotate-90" />
+                            </Button>
+                         </DropdownMenuTrigger>
+                         <DropdownMenuContent align="end" className="w-48 bg-[#0d1213] border-white/10 text-white">
+                            <DropdownMenuItem onClick={() => toast("Support team will contact you shortly.")} className="hover:bg-white/5 cursor-pointer">
+                               Contact Support
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push('/dashboard/gigs')} className="hover:bg-white/5 cursor-pointer">
+                               View Gig Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-400 hover:bg-red-400/10 cursor-pointer" onClick={() => toast("Task withdrawal initiated.")}>
+                               Withdraw Application
+                            </DropdownMenuItem>
+                         </DropdownMenuContent>
+                      </DropdownMenu>
                    </div>
                 </motion.div>
              ))

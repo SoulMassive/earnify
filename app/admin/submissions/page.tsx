@@ -20,7 +20,17 @@ export default function AdminSubmissions() {
     try {
       const res = await fetch('/api/admin/submissions')
       const data = await res.json()
-      setSubmissions(data)
+      if (Array.isArray(data)) {
+        setSubmissions(data)
+      } else {
+        console.error("API Error:", data.error)
+        toast.error(data.error || "Failed to load submissions")
+        setSubmissions([])
+      }
+    } catch (err) {
+      console.error("Fetch Error:", err)
+      toast.error("Network error while fetching submissions")
+      setSubmissions([])
     } finally {
       setLoading(false)
     }

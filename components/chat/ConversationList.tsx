@@ -45,7 +45,9 @@ export function ConversationList({ conversations, activeId, onSelect, role }: Pr
         ) : (
           <div className="divide-y divide-white/5">
             {conversations.map((conv) => {
-              const unread = role === 'admin' ? conv.unreadCount.admin : conv.unreadCount.student;
+              const unread = role === 'admin' 
+                ? (conv.unreadCount?.admin ?? 0) 
+                : (conv.unreadCount?.student ?? 0);
               const isActive = activeId === conv._id;
               
               return (
@@ -60,7 +62,7 @@ export function ConversationList({ conversations, activeId, onSelect, role }: Pr
                 >
                   <div className="flex justify-between items-start mb-1">
                     <p className={`font-bold text-sm truncate ${isActive ? 'text-primary' : 'text-white'}`}>
-                      {conv.opportunityId.title}
+                      {conv.opportunityId?.title || "Untitled Opportunity"}
                     </p>
                     {unread > 0 && (
                       <span className="bg-primary text-[#0a0f10] text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center">

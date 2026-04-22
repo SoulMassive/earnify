@@ -1,16 +1,14 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Search, Filter, SlidersHorizontal, 
+  Search, SlidersHorizontal, 
   ChevronRight, Briefcase, BookText, 
-  Palette, Code, Clock, Zap, Loader2,
-  X, Send, Link as LinkIcon, FileText
+  Palette, Code, Clock, Zap, Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
-import { AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { useAuth } from '@/components/auth/AuthContext'
 
@@ -23,11 +21,9 @@ export default function GigsMarketplace() {
   const [filterCategory, setFilterCategory] = useState('All')
   const [filterDifficulty, setFilterDifficulty] = useState('All')
   
-  // Submission Modal State
+  // Submission State
   const [selectedGig, setSelectedGig] = useState<any>(null)
   const [submitting, setSubmitting] = useState(false)
-  const [proofText, setProofText] = useState('')
-  const [proofUrl, setProofUrl] = useState('')
 
   useEffect(() => {
     const fetchGigs = async () => {
@@ -45,14 +41,45 @@ export default function GigsMarketplace() {
   }, [])
 
   const filteredGigs = gigs.filter(gig => {
-    const matchSearch = gig.title.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchCat = filterCategory === 'All' || gig.category === filterCategory
-    const matchDiff = filterDifficulty === 'All' || gig.difficulty === filterDifficulty
+    const matchSearch = gig.title?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchCat = filterCategory === 'All' || gig.category?.toLowerCase() === filterCategory.toLowerCase()
+    const matchDiff = filterDifficulty === 'All' || gig.difficulty?.toLowerCase() === filterDifficulty.toLowerCase()
     return matchSearch && matchCat && matchDiff
   })
 
   const categories = ['All', 'Writing', 'Design', 'Coding', 'Marketing', 'Development']
   const difficulties = ['All', 'Beginner', 'Intermediate', 'Expert']
+
+  // Apply logic - Direct Apply as requested by user
+  const handleApply = async (gig: any) => {
+    if (!user) {
+      toast.error("Please login to apply");
+      return;
+    }
+    
+    setSubmitting(true)
+    setSelectedGig(gig) // track which gig is being applied for the loader
+    try {
+      const res = await fetch('/api/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ opportunityId: gig._id })
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success("Applied Successfully!", {
+          description: "Check 'Ongoing Tasks' to track your progress. We'll notify you once approved."
+        })
+      } else {
+        toast.error(data.error || "Failed to apply")
+      }
+    } catch (err) {
+      toast.error("An unexpected error occurred")
+    } finally {
+      setSubmitting(false)
+      setSelectedGig(null)
+    }
+  }
 
   return (
     <div className="space-y-10 animate-fade-in">
@@ -130,7 +157,7 @@ export default function GigsMarketplace() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.05 }}
               key={gig._id}
-              className="bg-white/5 border border-white/10 p-8 rounded-[32px] flex flex-col justify-between group hover:border-primary/30 hover:bg-white/[0.08] transition-all relative overflow-hidden"
+              className="h-full bg-white/5 border border-white/10 p-8 rounded-[32px] flex flex-col justify-between group hover:border-primary/30 hover:bg-white/[0.08] transition-all relative overflow-hidden"
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -168,11 +195,18 @@ export default function GigsMarketplace() {
               </div>
 
               <Button 
-                onClick={() => setSelectedGig(gig)}
+                onClick={() => handleApply(gig)}
+                disabled={submitting && selectedGig?._id === gig._id}
                 className="w-full h-12 rounded-2xl bg-white/5 border border-white/10 group-hover:bg-primary group-hover:border-primary group-hover:text-[#0a0f10] text-white font-bold transition-all"
               >
-                Apply for Gig
-                <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                {submitting && selectedGig?._id === gig._id ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    Apply for Gig
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </Button>
 
               <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -197,129 +231,6 @@ export default function GigsMarketplace() {
           </div>
         )}
       </div>
-
-      {/* Submission Modal */}
-      <AnimatePresence>
-        {selectedGig && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedGig(null)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-xl bg-[#0a0f10] border border-white/10 rounded-[40px] overflow-hidden shadow-2xl"
-            >
-              <div className="p-8 sm:p-10">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-primary" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-white font-[family-name:var(--font-syne)]">Apply for Gig</h2>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => setSelectedGig(null)}
-                    className="h-10 w-10 rounded-full border border-white/5 text-white/40 hover:text-white"
-                  >
-                    <X className="w-5 h-5" />
-                  </Button>
-                </div>
-
-                <div className="mb-8 p-6 bg-white/5 rounded-3xl border border-white/5">
-                   <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Gig Target</p>
-                   <h3 className="text-lg font-bold text-white leading-tight">{selectedGig.title}</h3>
-                   <div className="flex items-center gap-4 mt-3 text-sm font-bold text-white/40">
-                      <span>₹{(selectedGig.reward || selectedGig.payout || 0).toLocaleString()} Reward</span>
-                      <span className="w-1 h-1 bg-white/10 rounded-full" />
-                      <span className="capitalize">{selectedGig.category}</span>
-                   </div>
-                   {selectedGig.description && (
-                      <p className="text-white/50 text-sm mt-6 leading-relaxed border-t border-white/5 pt-6 italic">
-                         &ldquo;{selectedGig.description}&rdquo;
-                      </p>
-                   )}
-                </div>
-
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest flex items-center gap-2">
-                      <FileText className="w-3.5 h-3.5" /> Work Proof / Description
-                    </label>
-                    <textarea 
-                      placeholder="Explain what you've done or paste the required text proof..."
-                      value={proofText}
-                      onChange={(e) => setProofText(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 min-h-[120px] text-white outline-none focus:border-primary/50 transition-all font-medium"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-white/40 uppercase tracking-widest flex items-center gap-2">
-                      <LinkIcon className="w-3.5 h-3.5" /> Proof Link (Optional)
-                    </label>
-                    <input 
-                      type="url"
-                      placeholder="e.g., https://github.com/... or https://instagram.com/p/..."
-                      value={proofUrl}
-                      onChange={(e) => setProofUrl(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-primary/50 transition-all font-medium"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex gap-4 pt-10">
-                  <Button 
-                    onClick={async () => {
-                      if (!proofText) return toast.error("Please provide work proof");
-                      setSubmitting(true)
-                      try {
-                        const res = await fetch('/api/submissions', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ 
-                            opportunityId: selectedGig._id, 
-                            proofText, 
-                            proofUrl 
-                          })
-                        })
-                        const data = await res.json()
-                        if (res.ok) {
-                          toast.success("Submission Received!", {
-                            description: "Your work is now in the review queue. We'll release your reward once verified."
-                          })
-                          setSelectedGig(null)
-                        } else {
-                          toast.error(data.error || "Submission failed")
-                        }
-                      } finally {
-                        setSubmitting(false)
-                      }
-                    }}
-                    disabled={submitting}
-                    className="flex-1 h-14 rounded-2xl bg-primary text-[#0a0f10] font-black text-lg group shadow-xl shadow-primary/10"
-                  >
-                    {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                      <>
-                        Deploy Proof
-                        <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }

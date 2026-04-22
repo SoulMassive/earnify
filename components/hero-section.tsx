@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Play, Search, TrendingUp, Users, Briefcase, Star, Loader2 } from "lucide-react"
+import { Play, Search, TrendingUp, Users, Briefcase, Star, Loader2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
@@ -129,11 +129,33 @@ export function HeroSection() {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start min-h-[48px]">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start min-h-[56px]">
               {loadingAuth ? (
-                <div className="h-12 w-48 bg-white/5 rounded-full animate-pulse border border-white/10" />
+                <div className="h-14 w-56 bg-white/5 rounded-full animate-pulse border border-white/10" />
+              ) : isAuthenticated ? (
+                <Button 
+                  onClick={() => router.push("/dashboard")} 
+                  className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base"
+                >
+                  Go to Dashboard
+                </Button>
               ) : (
-                <ExploreButton />
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    onClick={() => router.push("/signup")}
+                    className="btn-shimmer group h-14 px-10 rounded-full font-bold text-lg border-none shadow-2xl shadow-primary/40 bg-primary text-[#0a0f10] hover:scale-105 transition-transform"
+                  >
+                    Start Your First Earning
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    onClick={() => router.push("/explore")}
+                    className="h-14 px-8 rounded-full font-bold text-white hover:bg-white/5 transition-all"
+                  >
+                    Explore Gigs
+                  </Button>
+                </div>
               )}
             </div>
           </div>
@@ -220,7 +242,7 @@ function ExploreButton() {
       onClick={handleClick} 
       className="btn-cta-gradient text-white font-semibold rounded-full px-8 h-12 text-base hover:shadow-[0_0_20px_rgba(var(--cta-rgb),0.4)] hover:scale-105 transition-all duration-300 border-0"
     >
-      Explore Opportunities
+      Get Started for Free
     </Button>
   )
 }

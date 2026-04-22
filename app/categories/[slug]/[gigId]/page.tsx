@@ -60,7 +60,7 @@ export default function GigDetailPage() {
   }
 
   const handleApply = async () => {
-    if (settings && !settings.marketplaceEnabled) {
+    if (settings?.marketplaceEnabled === false) {
       toast.error("Marketplace is temporarily disabled")
       return
     }
@@ -182,14 +182,14 @@ export default function GigDetailPage() {
                <div className="space-y-4">
                   <Button 
                     onClick={handleApply}
-                    disabled={settings && !settings.marketplaceEnabled}
+                    disabled={settings?.marketplaceEnabled === false}
                     className={`w-full h-14 rounded-2xl font-bold text-lg shadow-xl active:scale-[0.98] transition-all ${
-                      settings && !settings.marketplaceEnabled 
+                      settings?.marketplaceEnabled === false 
                       ? 'bg-white/5 border border-white/10 text-white/20 cursor-not-allowed shadow-none' 
                       : 'btn-cta-gradient text-white shadow-[var(--primary)]/20 shadow-xl'
                     }`}
                   >
-                     {settings && !settings.marketplaceEnabled ? 'Marketplace Offline' : 'Start Task'}
+                     {settings?.marketplaceEnabled === false ? 'Marketplace Offline' : 'Start Task'}
                   </Button>
                   <Button 
                     variant="outline" 

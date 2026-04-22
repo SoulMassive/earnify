@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import './Conversation';
 
 const MessageSchema = new mongoose.Schema({
   conversationId: {
@@ -18,7 +19,16 @@ const MessageSchema = new mongoose.Schema({
   },
   messageText: {
     type: String,
-    required: true,
+    required: false,
+    default: ''
+  },
+  fileUrl: {
+    type: String,
+    default: null
+  },
+  workLink: {
+    type: String,
+    default: null
   },
   attachments: [String],
   readStatus: {

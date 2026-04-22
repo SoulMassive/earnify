@@ -2,47 +2,29 @@ import React from "react";
 
 export default function NotFound() {
   return (
-    <html lang="en">
-      <body
-        style={{
-          margin: 0,
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          gap: "16px",
-          fontFamily: "system-ui, sans-serif",
-          background: "#f1f5e2",
-          color: "#1c2b2c",
-        }}
-      >
-        <div style={{ fontSize: "72px", fontWeight: 800, color: "#6d9c9f" }}>
+    <div className="min-h-screen bg-[var(--dark-bg)] flex items-center justify-center p-6 text-center">
+      <div className="max-w-md w-full relative z-10">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[var(--primary)]/10 rounded-full blur-[100px] pointer-events-none" />
+        
+        <div className="text-8xl font-black text-white mb-4 font-[family-name:var(--font-jetbrains)] tracking-tighter">
           404
         </div>
-        <h2 style={{ fontSize: "22px", fontWeight: 700, margin: 0 }}>
-          Page Not Found
+        
+        <h2 className="text-3xl font-bold font-[family-name:var(--font-syne)] text-white mb-4">
+          Lost in the Workspace?
         </h2>
-        <p style={{ color: "#5a7a7b", fontSize: "15px", margin: 0 }}>
-          The page you are looking for doesn&apos;t exist.
+        
+        <p className="text-[var(--text-muted)] text-lg mb-10 leading-relaxed">
+          The page you are looking for has been moved or doesn't exist. Let's get you back to earning.
         </p>
+        
         <a
           href="/"
-          style={{
-            background: "linear-gradient(135deg, #6d9c9f, #4a8b8e)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "100px",
-            padding: "12px 28px",
-            fontSize: "15px",
-            fontWeight: 600,
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
+          className="btn-cta-gradient inline-flex items-center justify-center px-8 py-4 rounded-2xl text-white font-bold text-lg shadow-xl shadow-[var(--primary)]/20 active:scale-95 transition-all"
         >
-          Go Home
+          Return to Dashboard
         </a>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }

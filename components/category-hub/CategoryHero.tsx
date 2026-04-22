@@ -14,7 +14,7 @@ interface CategoryData {
   successRate: string;
 }
 
-export function CategoryHero({ slug }: { slug: string }) {
+export function CategoryHero({ slug, onViewResources }: { slug: string, onViewResources?: () => void }) {
   const router = useRouter()
   const [category, setCategory] = useState<CategoryData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -99,6 +99,7 @@ export function CategoryHero({ slug }: { slug: string }) {
               </Button>
               <Button 
                 variant="outline" 
+                onClick={onViewResources}
                 className="h-14 px-8 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 text-white font-bold transition-all backdrop-blur-sm"
               >
                 View Resources

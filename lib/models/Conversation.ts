@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import './Opportunity';
+import './User';
 
 const ConversationSchema = new mongoose.Schema({
   opportunityId: {
